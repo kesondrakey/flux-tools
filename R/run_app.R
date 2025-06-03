@@ -1,10 +1,8 @@
-# R/run_app.R
-
-#’ Launch the interactive QA/QC app for flux data
-#’
-#’ @param offset Integer. The site’s UTC offset in hours (e.g. –5 for “UTC–5”, +2 for “UTC+2”).
-#’               This argument is required.
-#’ @export
+#' Launch the interactive QA/QC app for flux data
+#'
+#' @param offset Integer. The site's UTC offset in hours (e.g. –5 for “UTC–5”, +2 for “UTC+2”).
+#'               This argument is required.
+#' @export
 run_flux_qaqc <- function(offset) {
   # 1) Validate offset
   if (missing(offset) ||
@@ -20,11 +18,11 @@ run_flux_qaqc <- function(offset) {
   old_opts <- options(shiny.initialOffset = as.integer(offset))
   on.exit(options(old_opts), add = TRUE)
   
-  # 3) Run the app. In a **released** package, we’ll use system.file("app", …).
+  # 3) Run the app. In a **released** package, we'll use system.file("app", …).
   #    But for local testing, you can point directly at "inst/app".
-  app_dir <- system.file("app", package = "flux-tools")
+  app_dir <- system.file("app", package = "fluxtools")
   if (app_dir == "") {
-    # We’re likely in “development mode” (not yet installed). Use the local path:
+    # We're likely in “development mode” (not yet installed). Use the local path:
     app_dir <- "inst/app"
   }
   
@@ -33,3 +31,13 @@ run_flux_qaqc <- function(offset) {
     launch.browser = TRUE
   )
 }
+
+
+
+
+
+
+
+
+
+

@@ -4,6 +4,9 @@ library(dplyr)
 library(stringr)
 library(lubridate)
 
+# Allow larger uploads (here: up to 100 MB)
+options(shiny.maxRequestSize = 100 * 1024^2)
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Helper: turn an integer offset (e.g. –5) into an “Etc/GMT” string
 make_local_tz <- function(offset) {
