@@ -62,6 +62,12 @@ df2 <- df2 %>%
 
 ```
 
+- **Example usage**
+source("R/run_app.R")
+run_flux_qaqc(offset = -10) #User must select UTC offset for local tower time
+
+
+
 Please cite the use of this product. 
 
 CITATION:
