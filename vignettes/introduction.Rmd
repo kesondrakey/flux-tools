@@ -1,0 +1,40 @@
+---
+title: "Introduction to fluxtools"
+author: "Kesondra Key"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Introduction to fluxtools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Overview
+
+**fluxtools** is an R package that provides an interactive Shiny‐based QA/QC environment for AmeriFlux‐style flux‐tower data. In just a few clicks, you can:
+
+1. Upload one year of FLUXNET‐style CSV data.
+2. Visualize any two numeric columns against time (or against each other).
+3. Highlight statistical outliers (±σ from a linear fit). Clicking select adds these values to the accumulated code.
+4. Manually select and remove data points via a lasso or box. Selecting these adds to the accumulated code box.
+5. See the corresponding R code snippet that would set those values to `NA`.
+6. The best method for QA/QC would be to copy and paste the generated code into your own .R script for documentation
+7. However, you can also Download a “cleaned” CSV (with your excluded values replaced by `NA`).
+
+This vignette shows you how to install, launch, and use the main Shiny app—`run_flux_qaqc()`—and walks through a typical workflow.
+
+---
+
+# Installation
+
+You can install **fluxtools** from CRAN (once it’s been accepted), or directly from GitHub. For CRAN:
+
+```r {}`
+install.packages("fluxtools")
+
+library(fluxtools)
+run_flux_qaqc(-5)  #with UTC offset. ex. UTC-5 indicates EST
+```
