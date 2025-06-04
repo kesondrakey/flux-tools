@@ -2,10 +2,7 @@
 title: "Introduction to fluxtools"
 author: "Kesondra Key"
 date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    toc_depth: 3
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to fluxtools}
   %\VignetteEngine{knitr::rmarkdown}
@@ -36,5 +33,7 @@ You can install **fluxtools** from CRAN (once it’s been accepted), or directly
 install.packages("fluxtools")
 
 library(fluxtools)
+
+
 run_flux_qaqc(-5)  #with UTC offset. ex. UTC-5 indicates EST
 ```

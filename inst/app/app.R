@@ -1,14 +1,14 @@
 library(shiny)
 library(plotly)
 library(dplyr)
-library(stringr)
-library(lubridate)
+# library(stringr)
+# library(lubridate)
 
 # Allow larger uploads (here: up to 100 MB)
 options(shiny.maxRequestSize = 100 * 1024^2)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Helper: turn an integer offset (e.g. –5) into an “Etc/GMT” string
+# Helper: turn an integer offset (e.g. -5) into an “Etc/GMT” string
 make_local_tz <- function(offset) {
   if (offset == 0) return("UTC")
   sign_chr <- if (offset < 0) "+" else "-"
@@ -17,25 +17,25 @@ make_local_tz <- function(offset) {
 }
 
 ui <- fluidPage(
-  titlePanel("flux-tools: Interactive QA/QC with Code Generator"),
+  titlePanel("fluxtools: Interactive QA/QC with Code Generator"),
   uiOutput("subtitle"),
   sidebarLayout(
     sidebarPanel(
       width = 4,
-      
+
       # 1) file upload
       fileInput(
         "csv_file",
         "Upload FLUXNET-style .csv (one year):",
         accept = ".csv"
       ),
-      
+
       hr(),
-      
+
       # 2) dropdowns for x‐ and y‐variables
       selectInput("yvar", "Y-axis:", choices = NULL),
       selectInput("xvar", "X-axis:", choices = NULL),
-      
+
       # 3) “Add current selection” and “Reset Current Selection” side by side
       fluidRow(
         column(
@@ -51,7 +51,7 @@ ui <- fluidPage(
           )
         )
       ),
-      
+
       # 4) “Remove from accumulated” and “Reset ALL Filters” side by side
       fluidRow(
         column(
@@ -67,13 +67,13 @@ ui <- fluidPage(
           )
         )
       ),
-      
+
       # 5) a bit of spacing, then “Confirm Remove” on its own line
       tags$br(),
       actionButton("remove", "Confirm Remove"),
-      
+
       hr(),
-      
+
       # 6) Outlier slider + buttons
       sliderInput(
         "sd_thresh",
@@ -94,36 +94,36 @@ ui <- fluidPage(
           actionButton("clear_outliers", "Clear ±σ outlier selection", width = "100%")
         )
       ),
-      
+
       hr(),
-      
+
       # 7) Preview selection
       h4("Preview selection:"),
       div(
         style = "max-height:200px; overflow-y:auto; padding:4px; border:1px solid #ddd;",
         tableOutput("preview")
       ),
-      
+
       hr(),
-      
+
       # 8) Current‐selection code
       h4("Current‐selection code:"),
       div(
         style = "max-height:180px; overflow-y:auto; padding:4px; border:1px solid #ddd; background:#f9f9f9;",
         verbatimTextOutput("code_current")
       ),
-      
+
       hr(),
-      
+
       # 9) Accumulated‐selection code
       h4("Accumulated‐selection code:"),
       div(
         style = "max-height:180px; overflow-y:auto; padding:4px; border:1px solid #ddd; background:#f9f9f9;",
         verbatimTextOutput("code_all")
       ),
-      
+
       hr(),
-      
+
       # # 10) Removed data points (as a code snippet)
       # h4("Removed data points:"),
       # div(
@@ -132,9 +132,9 @@ ui <- fluidPage(
       #   # style = "max-height:150px; overflow-y:auto; padding:4px; border:1px solid #ddd; background:#f9f9f9;",
       #   # verbatimTextOutput("removed_code")
       # ),
-      # 
+      #
       # hr(),
-      
+
       # 11) Download & Reset‐Data buttons
       fluidRow(
         column(
@@ -147,7 +147,7 @@ ui <- fluidPage(
         )
       )
     ),
-    
+
     mainPanel(
       width = 8,
       plotlyOutput("qc_plot", height = "80vh")
@@ -164,11 +164,11 @@ server <- function(input, output, session) {
       style = "color:#555; margin-top:-10px; margin-bottom:20px;"
     )
   })
-  
+
   # 1) “Injected” offset → local_tz
   offset   <- getOption("shiny.initialOffset", default = -5)
   local_tz <- make_local_tz(offset)
-  
+
   # 2a) Read raw CSV
   raw_df <- reactive({
     req(input$csv_file)
@@ -179,7 +179,7 @@ server <- function(input, output, session) {
       na.strings = "-9999"
     )
   })
-  
+
   # 2b) Parse TIMESTAMP_START → POSIXct in local_tz + keep .row index
   shifted_df <- reactive({
     df0 <- raw_df()
@@ -192,31 +192,31 @@ server <- function(input, output, session) {
         .row            = row_number()
       )
   })
-  
+
   # 2c) Keep a reactiveValues copy of the current data, plus an immutable original
   rv      <- reactiveValues(df = NULL)
   orig_df <- reactiveVal(NULL)
-  
+
   observeEvent(shifted_df(), {
     rv$df     <- shifted_df()
     orig_df(shifted_df())
   })
-  
+
   # Track manual selections / removals
   sel_keys       <- reactiveVal(integer(0))
   removed_ts     <- reactiveValues()   # for “accumulated‐selection code”
   outlier_keys   <- reactiveVal(integer(0))
-  
+
   # Track exactly which timestamps have been Confirm Removed
   confirmed_ts <- reactiveValues()
-  
+
   # Helper: lasso‐selected rows
   selected_keys <- reactive({
     sel <- event_data("plotly_selected", source = "qc_plot")
     if (is.null(sel)) return(integer(0))
     sel$key
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Whenever the Y‐variable changes, clear the “current selection” and outliers
   # ────────────────────────────────────────────────────────────────────────────
@@ -225,22 +225,22 @@ server <- function(input, output, session) {
     outlier_keys(integer(0))
     session$resetBrush("qc_plot")
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Rebuild xvar/yvar dropdowns whenever new data arrives
   # ────────────────────────────────────────────────────────────────────────────
   observe({
     df <- rv$df
     req(df)
-    
+
     num_cols <- df %>%
       select(-TIMESTAMP_START, -raw_ts, -ts_str, -.row) %>%
       select(where(is.numeric)) %>%
       names()
-    
+
     x_choices <- c("TIMESTAMP_START", num_cols)
     y_choices <- num_cols
-    
+
     updateSelectInput(
       session, "xvar",
       choices = x_choices,
@@ -251,7 +251,7 @@ server <- function(input, output, session) {
           "TIMESTAMP_START"
         }
     )
-    
+
     updateSelectInput(
       session, "yvar",
       choices = y_choices,
@@ -263,22 +263,22 @@ server <- function(input, output, session) {
         }
     )
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Compute residuals & flag ±σ outliers
   # ────────────────────────────────────────────────────────────────────────────
   df_clean <- reactive({
     df0 <- rv$df
     req(df0, input$xvar, input$yvar, input$sd_thresh)
-    
+
     df1 <- df0 %>%
       filter(
         !is.na(.data[[input$xvar]]),
         !is.na(.data[[input$yvar]])
       )
-    
+
     fit0 <- lm(reformulate(input$xvar, input$yvar), data = df1)
-    
+
     df1 %>%
       mutate(
         fitted = predict(fit0, newdata = .),
@@ -290,7 +290,7 @@ server <- function(input, output, session) {
         )
       )
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Button logic: add/remove outliers & manual selection accumulation
   # ────────────────────────────────────────────────────────────────────────────
@@ -298,68 +298,68 @@ server <- function(input, output, session) {
     ok <- df_clean() %>% filter(flag == "outlier") %>% pull(.row)
     outlier_keys(unique(c(isolate(outlier_keys()), ok)))
     sel_keys(unique(c(isolate(sel_keys()), ok)))
-    
+
     ts  <- rv$df %>% filter(.row %in% ok) %>% pull(ts_str)
     old <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- unique(c(old, ts))
   })
-  
+
   observeEvent(input$clear_outliers, {
     old_out <- isolate(outlier_keys())
     if (length(old_out) == 0) return()
-    
+
     sel_keys(setdiff(isolate(sel_keys()), old_out))
     outlier_keys(integer(0))
-    
+
     ts_out   <- rv$df %>% filter(.row %in% old_out) %>% pull(ts_str)
     existing <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- setdiff(existing, ts_out)
   })
-  
+
   observeEvent(input$add_sel, {
     keys <- selected_keys()
     if (!length(keys)) return()
-    
+
     sel_keys(unique(c(isolate(sel_keys()), keys)))
     ts    <- rv$df %>% filter(.row %in% keys) %>% pull(ts_str)
     old   <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- unique(c(old, ts))
   })
-  
+
   observeEvent(input$remove_acc, {
     keys <- selected_keys()
     if (!length(keys)) return()
-    
+
     new_sel <- setdiff(isolate(sel_keys()), keys)
     sel_keys(new_sel)
-    
+
     ts_vals <- rv$df %>% filter(.row %in% keys) %>% pull(ts_str)
     old     <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- setdiff(old, ts_vals)
   })
-  
+
   observeEvent(input$clear_sel, {
     sel_keys(integer(0))
   })
-  
+
   observeEvent(input$reset_all, {
     sel_keys(integer(0))
     outlier_keys(integer(0))
     # Clear the Plotly brush so that selected_keys() immediately becomes integer(0)
     session$resetBrush("qc_plot")
-    
+
     for (nm in names(reactiveValuesToList(removed_ts))) {
       removed_ts[[nm]] <- NULL
     }
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Render the Plotly scatter (with event_register)
   # ────────────────────────────────────────────────────────────────────────────
   output$qc_plot <- renderPlotly({
     df0 <- rv$df
     req(df0, input$xvar, input$yvar)
-    
+
     dfc <- df0 %>%
       filter(
         !is.na(.data[[input$xvar]]),
@@ -378,7 +378,7 @@ server <- function(input, output, session) {
           )
         )
       }
-    
+
     p <- plot_ly(
       data   = dfc,
       x      = ~.data[[input$xvar]],
@@ -389,7 +389,7 @@ server <- function(input, output, session) {
       type   = "scatter",
       marker = list(color = "#228833", opacity = 0.6)
     )
-    
+
     if (input$sd_thresh > 0) {
       p <- p %>%
         add_trace(
@@ -402,7 +402,7 @@ server <- function(input, output, session) {
           showlegend = FALSE
         )
     }
-    
+
     if (length(sel_keys()) > 0) {
       p <- p %>%
         add_trace(
@@ -416,7 +416,7 @@ server <- function(input, output, session) {
           showlegend = FALSE
         )
     }
-    
+
     if (input$show_reg && input$xvar != "TIMESTAMP_START") {
       df_in <- if (input$sd_thresh > 0) filter(dfc, flag == "inlier") else dfc
       if (nrow(df_in) >= 2) {
@@ -428,7 +428,7 @@ server <- function(input, output, session) {
           length.out = 100
         )
         preds  <- predict(fit1, newdata = setNames(data.frame(xseq), input$xvar))
-        
+
         p <- p %>%
           add_lines(
             x          = xseq,
@@ -451,7 +451,7 @@ server <- function(input, output, session) {
             bordercolor = "black"
           )
       }
-      
+
       acc_sel <- isolate(sel_keys())
       if (length(acc_sel) > 0) {
         df_drop_sel <- df_in %>% filter(!(.row %in% acc_sel))
@@ -479,7 +479,7 @@ server <- function(input, output, session) {
           )
       }
     }
-    
+
     p %>%
       layout(
         dragmode = "select",
@@ -492,7 +492,7 @@ server <- function(input, output, session) {
       ) %>%
       event_register("plotly_selected")
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Preview table (same as before)
   # ────────────────────────────────────────────────────────────────────────────
@@ -500,9 +500,9 @@ server <- function(input, output, session) {
     keys <- selected_keys()
     if (length(keys) == 0) keys <- sel_keys()
     if (length(keys) == 0) return(NULL)
-    
+
     local_label <- sprintf("Timestamp (UTC%+d)", offset)
-    
+
     rv$df %>%
       filter(.row %in% keys) %>%
       mutate(
@@ -515,7 +515,7 @@ server <- function(input, output, session) {
       select(all_of(local_label), !!sym(input$yvar), raw_ts) %>%
       setNames(c(local_label, input$yvar, "raw_ts"))
   }, sanitize.text.function = identity)
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Current‐selection code
   # ────────────────────────────────────────────────────────────────────────────
@@ -541,7 +541,7 @@ server <- function(input, output, session) {
       "  )"
     )
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Accumulated‐selection code
   # ────────────────────────────────────────────────────────────────────────────
@@ -570,7 +570,7 @@ server <- function(input, output, session) {
     })
     paste(unlist(snippets), collapse = "\n\n")
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Removed‐points code snippet (only those Confirm Removed)
   # ────────────────────────────────────────────────────────────────────────────
@@ -580,10 +580,10 @@ server <- function(input, output, session) {
     if (length(pulled_ts) == 0) {
       return("<!-- no points have been “Confirmed Remove” yet -->")
     }
-    
+
     # build a case_when(...) string using TIMESTAMP_START
     conds <- paste0(
-      "TIMESTAMP_START == '", pulled_ts, "' ~ NA_real_", 
+      "TIMESTAMP_START == '", pulled_ts, "' ~ NA_real_",
       collapse = ",\n      "
     )
     paste0(
@@ -596,8 +596,8 @@ server <- function(input, output, session) {
       "  )"
     )
   })
-  
-  
+
+
   # ────────────────────────────────────────────────────────────────────────────
   # DOWNLOAD HANDLER for “Download cleaned CSV”
   # ────────────────────────────────────────────────────────────────────────────
@@ -608,10 +608,10 @@ server <- function(input, output, session) {
     content = function(file) {
       # 1) Read exactly the user’s original upload, TIMESTAMP_START still text:
       base_df <- raw_df()   # reactive() that does read.csv(datapath, colClasses=TIMESTAMP_START="character", …)
-      
+
       # 2) Grab the “helper” copy (POSIXct timestamps + any y’s set to NA):
       helper <- rv$df
-      
+
       # 3) Overwrite only the _non‐TIMESTAMP_START_ columns in base_df.
       #    This way, TIMESTAMP_START stays exactly as it was in the raw file.
       for (colname in setdiff(names(base_df), "TIMESTAMP_START")) {
@@ -619,14 +619,14 @@ server <- function(input, output, session) {
           base_df[[colname]] <- helper[[colname]]
         }
       }
-      
+
       # 4) Finally, write out just the columns that came from the user’s original CSV.
       write.csv(base_df, file, row.names = FALSE, na = "NA")
     }
   )
-  
-  
-  
+
+
+
   # ────────────────────────────────────────────────────────────────────────────
   # Confirm Remove → set selected rows’ y‐value to NA, record them in confirmed_ts
   # ────────────────────────────────────────────────────────────────────────────
@@ -635,33 +635,33 @@ server <- function(input, output, session) {
     acc_sel   <- as.integer(isolate(sel_keys()))
     out_sel   <- as.integer(isolate(outlier_keys()))
     to_remove <- union(old_sel, union(acc_sel, out_sel))
-    
+
     valid_rows <- seq_len(nrow(rv$df))
     to_remove  <- intersect(to_remove, valid_rows)
     if (!length(to_remove)) return()
-    
+
     # (1) Grab their ts_str before setting to NA
     just_ts <- rv$df %>%
       slice(to_remove) %>%
       pull(ts_str)
-    
+
     # (2) Set the y‐variable to NA for those rows
     rv$df[to_remove, input$yvar] <- NA_real_
-    
+
     # (3) Record them under confirmed_ts[[ yvar ]]
     old_confirmed <- confirmed_ts[[input$yvar]] %||% character()
     confirmed_ts[[input$yvar]] <- unique(c(old_confirmed, just_ts))
-    
+
     # (4) Also remove them from the “accumulated‐selection” list
     old_removed <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- setdiff(old_removed, just_ts)
-    
+
     # (5) Clear brushes, sel_keys(), and outlier_keys()
     session$resetBrush("qc_plot")
     sel_keys(integer(0))
     outlier_keys(integer(0))
   })
-  
+
   # ────────────────────────────────────────────────────────────────────────────
   # Reset Data → restore rv$df to orig_df() and clear all removal records
   # ────────────────────────────────────────────────────────────────────────────
@@ -669,7 +669,7 @@ server <- function(input, output, session) {
     df0 <- orig_df()
     req(df0)
     rv$df <- df0
-    
+
     for (nm in names(reactiveValuesToList(removed_ts))) {
       removed_ts[[nm]] <- NULL
     }

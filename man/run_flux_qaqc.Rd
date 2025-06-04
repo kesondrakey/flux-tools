@@ -7,7 +7,7 @@
 run_flux_qaqc(offset)
 }
 \arguments{
-\item{offset}{Integer. The site's UTC offset in hours (e.g. –5 for “UTC–5”, +2 for “UTC+2”).
+\item{offset}{Integer. The site's UTC offset in hours (e.g. -5 for 'UTC-5', +2 for 'UTC+2').
 This argument is required.}
 }
 \description{
