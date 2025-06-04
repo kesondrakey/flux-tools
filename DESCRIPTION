@@ -1,15 +1,13 @@
-Type: Package
 Package: fluxtools
 Title: Fluxtools: Interactive QA/QC for AmeriFlux Data
 Version: 0.1.0
 Authors@R: 
     person("Kesondra", "Key", , "keyke@iu.edu", role = c("aut", "cre"))
-Description: A Shiny‐based interactive QA/QC tool for flux tower data,
-    generating removal code and cleaned CSV.
+Description: A Shiny–based interactive QA/QC tool for flux tower data,
+    generating removal code and cleaned csv
 License: MIT + file LICENSE
-URL: https://github.com/Kkey/fluxtools
-BugReports: https://github.com/Kkey/fluxtools/issues
+URL: https://github.com/kesondrakey/fluxtools
+BugReports: https://github.com/kesondrakey/fluxtools/issues
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
