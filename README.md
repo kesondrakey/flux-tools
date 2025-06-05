@@ -73,4 +73,5 @@ run_flux_qaqc(offset = -10) #User must select UTC offset for local tower time
 
 Please cite the use of this product. 
 
-CITATION:
+If you use fluxtools in your workflow, please cite:
+Key, K. (2025). fluxtools (version 0.1.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15597160
