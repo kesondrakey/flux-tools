@@ -3,6 +3,9 @@
 Interactive Shiny application for QA/QC of AmeriFlux‐style flux‐tower data.  
 Designed to streamline the post‐processing of eddy covariance datasets (e.g., after EddyPro, physical boundary filtering) to detect and remove outliers, and generate reproducible R code for QA/QC AmeriFlux submission.
 
+If you use fluxtools in your workflow, please cite:
+Key, K. (2025). fluxtools (version 0.1.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15597160
+
 ---
 
 ## Table of Contents
