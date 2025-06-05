@@ -1,8 +1,13 @@
+pkgs <- c("shiny", "plotly", "dplyr")
+for (p in pkgs) {
+  if (!requireNamespace(p, quietly = TRUE)) {
+    install.packages(p)
+  }
+}
+# Now they’re guaranteed to be installed:
 library(shiny)
 library(plotly)
 library(dplyr)
-# library(stringr)
-# library(lubridate)
 
 # Allow larger uploads (here: up to 100 MB)
 options(shiny.maxRequestSize = 100 * 1024^2)
