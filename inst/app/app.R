@@ -31,9 +31,23 @@ ui <- fluidPage(
       # 1) file upload
       fileInput(
         "csv_file",
-        "Upload FLUXNET-style .csv (one year):",
+        "Upload Ameriflux-style .csv:",
         accept = ".csv"
       ),
+
+      # 1a) YEAR selector (populated after upload)
+      selectizeInput(
+        "year_sel",
+        "Select Year(s):",
+        choices  = NULL,
+        multiple = TRUE,
+        options  = list(
+          placeholder    = "– upload a file to see year(s) –",
+          onInitialize   = I("function() { this.setValue('All'); }"),
+          plugins        = list("remove_button")
+        )
+      ),
+
 
       hr(),
 
@@ -326,14 +340,47 @@ server <- function(input, output, session) {
       )
   })
 
+
+
   # 2c) Keep a reactiveValues copy of the current data, plus an immutable original
   rv      <- reactiveValues(df = NULL)
   orig_df <- reactiveVal(NULL)
 
+  # ────────────────────────────────────────────────────────────────────────────
+  # When a new file arrives, place it into rv$df, record original copy,
+  # and populate “year_sel” with “All” + each unique year
+  # ────────────────────────────────────────────────────────────────────────────
   observeEvent(shifted_df(), {
-    rv$df     <- shifted_df()
+    rv$df <- shifted_df()
     orig_df(shifted_df())
+
+    all_years <- sort(unique(format(rv$df$TIMESTAMP_START, "%Y")))
+    # add “All” in front of every other year
+    choices_with_all <- c("All", all_years)
+
+    updateSelectizeInput(
+      session,
+      "year_sel",
+      choices  = c("All", all_years),
+      selected = "All"
+    )
   })
+
+  # 3) Reactive: df_by_year() filters rv$df by whichever years the user picked.
+  df_by_year <- reactive({
+    req(rv$df, input$year_sel)
+    # If the user has "All" selected *and* no other year, return the full data:
+    if (identical(input$year_sel, "All")) {
+      return(rv$df)
+    }
+
+    # Otherwise, drop "All" (if present) and filter by the remaining years:
+    chosen_years <- setdiff(input$year_sel, "All")
+
+    rv$df %>%
+      filter(format(TIMESTAMP_START, "%Y") %in% chosen_years)
+  })
+
 
   # Track manual selections / removals
   sel_keys       <- reactiveVal(integer(0))
@@ -363,7 +410,7 @@ server <- function(input, output, session) {
     # (removed_ts[[ yvar ]] might be a character vector of ts_str values)
     current_ts <- removed_ts[[ input$yvar ]] %||% character()
     if (length(current_ts)) {
-      matching_rows <- which(rv$df$ts_str %in% current_ts)
+      matching_rows <- which(df_by_year()$ts_str %in% current_ts)
       sel_keys(matching_rows)
     } else {
       sel_keys(integer(0))
@@ -375,7 +422,7 @@ server <- function(input, output, session) {
   # Rebuild xvar/yvar dropdowns whenever new data arrives
   # ────────────────────────────────────────────────────────────────────────────
   observe({
-    df <- rv$df
+    df <- df_by_year()
     req(df)
 
     num_cols <- df %>%
@@ -413,7 +460,7 @@ server <- function(input, output, session) {
   # Compute residuals & flag ±σ outliers
   # ────────────────────────────────────────────────────────────────────────────
   df_clean <- reactive({
-    df0 <- rv$df
+    df0 <- df_by_year()
     req(df0, input$xvar, input$yvar, input$sd_thresh)
 
     df1 <- df0 %>%
@@ -444,7 +491,7 @@ server <- function(input, output, session) {
     outlier_keys(unique(c(isolate(outlier_keys()), ok)))
     sel_keys(unique(c(isolate(sel_keys()), ok)))
 
-    ts  <- rv$df %>% filter(.row %in% ok) %>% pull(ts_str)
+    ts  <- df_by_year() %>% filter(.row %in% ok) %>% pull(ts_str)
     old <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- unique(c(old, ts))
   })
@@ -456,7 +503,7 @@ server <- function(input, output, session) {
     sel_keys(setdiff(isolate(sel_keys()), old_out))
     outlier_keys(integer(0))
 
-    ts_out   <- rv$df %>% filter(.row %in% old_out) %>% pull(ts_str)
+    ts_out   <- df_by_year() %>% filter(.row %in% old_out) %>% pull(ts_str)
     existing <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- setdiff(existing, ts_out)
   })
@@ -466,7 +513,7 @@ server <- function(input, output, session) {
     if (!length(keys)) return()
 
     sel_keys(unique(c(isolate(sel_keys()), keys)))
-    ts    <- rv$df %>% filter(.row %in% keys) %>% pull(ts_str)
+    ts    <- df_by_year() %>% filter(.row %in% keys) %>% pull(ts_str)
     old   <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- unique(c(old, ts))
   })
@@ -478,7 +525,7 @@ server <- function(input, output, session) {
     new_sel <- setdiff(isolate(sel_keys()), keys)
     sel_keys(new_sel)
 
-    ts_vals <- rv$df %>% filter(.row %in% keys) %>% pull(ts_str)
+    ts_vals <- df_by_year() %>% filter(.row %in% keys) %>% pull(ts_str)
     old     <- removed_ts[[input$yvar]] %||% character()
     removed_ts[[input$yvar]] <- setdiff(old, ts_vals)
   })
@@ -502,7 +549,7 @@ server <- function(input, output, session) {
   # Render the Plotly scatter (with event_register)
   # ────────────────────────────────────────────────────────────────────────────
   output$qc_plot <- renderPlotly({
-    df0 <- rv$df
+    df0 <- df_by_year()
     req(df0, input$xvar, input$yvar)
 
 
@@ -669,7 +716,7 @@ server <- function(input, output, session) {
 
     local_label <- sprintf("Timestamp (UTC%+d)", offset)
 
-    rv$df %>%
+    df_by_year() %>%
       filter(.row %in% keys) %>%
       mutate(
         !!local_label := format(
@@ -695,7 +742,7 @@ server <- function(input, output, session) {
 
 ")
     }
-    sel_ts <- rv$df %>% filter(.row %in% keys) %>% pull(ts_str)
+    sel_ts <- df_by_year() %>% filter(.row %in% keys) %>% pull(ts_str)
     conds  <- paste0("TIMESTAMP_START == '", sel_ts, "' ~ NA_real_", collapse = ",\n      ")
     paste0(
       "df <- df %>%\n",
@@ -776,7 +823,7 @@ server <- function(input, output, session) {
       base_df <- raw_df()   # reactive() that does read.csv(datapath, colClasses=TIMESTAMP_START="character", …)
 
       # 2) Grab the “helper” copy (POSIXct timestamps + any y’s set to NA):
-      helper <- rv$df
+      helper <- df_by_year()
 
       # 3) Overwrite only the _non‐TIMESTAMP_START_ columns in base_df.
       #    This way, TIMESTAMP_START stays exactly as it was in the raw file.
@@ -802,17 +849,17 @@ server <- function(input, output, session) {
     out_sel   <- as.integer(isolate(outlier_keys()))
     to_remove <- union(old_sel, union(acc_sel, out_sel))
 
-    valid_rows <- seq_len(nrow(rv$df))
+    valid_rows <- seq_len(nrow(df_by_year()))
     to_remove  <- intersect(to_remove, valid_rows)
     if (!length(to_remove)) return()
 
     # (1) Grab their ts_str before setting to NA
-    just_ts <- rv$df %>%
+    just_ts <- df_by_year() %>%
       slice(to_remove) %>%
       pull(ts_str)
 
     # (2) Set the y‐variable to NA for those rows
-    rv$df[to_remove, input$yvar] <- NA_real_
+    df_by_year()[to_remove, input$yvar] <- NA_real_
 
     # (3) Record them under confirmed_ts[[ yvar ]]
     old_confirmed <- confirmed_ts[[input$yvar]] %||% character()
@@ -829,12 +876,12 @@ server <- function(input, output, session) {
   })
 
   # ────────────────────────────────────────────────────────────────────────────
-  # Reset Data → restore rv$df to orig_df() and clear all removal records
+  # Reset Data → restore df_by_year() to orig_df() and clear all removal records
   # ────────────────────────────────────────────────────────────────────────────
   observeEvent(input$reset_data, {
     df0 <- orig_df()
     req(df0)
-    rv$df <- df0
+    df_by_year() <- df0
 
     for (nm in names(reactiveValuesToList(removed_ts))) {
       removed_ts[[nm]] <- NULL
