@@ -1,0 +1,7 @@
+# inst/CITATION
+
+citHeader("To cite the 'fluxtools' package in publications, please use:
+
+  Key, K. (2025) ‘fluxtools: Interactive QA/QC for AmeriFlux Data’, 
+  R package version 0.1.1, <https://github.com/kesondrakey/fluxtools>.
+")

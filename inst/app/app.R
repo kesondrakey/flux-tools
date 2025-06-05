@@ -1,9 +1,9 @@
-pkgs <- c("shiny", "plotly", "dplyr")
-for (p in pkgs) {
-  if (!requireNamespace(p, quietly = TRUE)) {
-    install.packages(p)
-  }
-}
+# pkgs <- c("shiny", "plotly", "dplyr", "htmltools")
+# for (p in pkgs) {
+#   if (!requireNamespace(p, quietly = TRUE)) {
+#     install.packages(p)
+#   }
+# }
 # Now they’re guaranteed to be installed:
 library(shiny)
 library(plotly)
@@ -85,7 +85,7 @@ ui <- fluidPage(
         "Highlight points beyond (σ):",
         min   = 0,
         max   = 3,
-        value = 1,
+        value = 0,    # ← default is 0σ
         step  = 1
       ),
       checkboxInput("show_reg", "Show regression line & R²", value = TRUE),
@@ -112,20 +112,148 @@ ui <- fluidPage(
       hr(),
 
       # 8) Current‐selection code
-      h4("Current‐selection code:"),
       div(
-        style = "max-height:180px; overflow-y:auto; padding:4px; border:1px solid #ddd; background:#f9f9f9;",
+        style = "display: flex; justify-content: space-between; align-items: center;",
+        h4("Current‐selection code:"),
+        # Single‐line JS, no stray line breaks:
+        #this code is to make the "copy all" button work!
+        tags$button(
+          "Copy all",
+          type = "button",
+          onclick = HTML("
+    (function() {
+      var txtNode = document.getElementById('code_current');
+      if (!txtNode) {
+        alert('Could not find element to copy!');
+        return;
+      }
+      var textToCopy = txtNode.innerText;
+
+      // First, try modern Clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy)
+          .then(function() { /* success – silently do nothing */ })
+          .catch(function(err) {
+            // If Clipboard API fails, fall back
+            fallbackCopyTextToClipboard(textToCopy);
+          });
+      } else {
+        // If Clipboard API unavailable, fall back
+        fallbackCopyTextToClipboard(textToCopy);
+      }
+
+      // Fallback implementation:
+      function fallbackCopyTextToClipboard(text) {
+        var textArea = document.createElement('textarea');
+        textArea.value = text;
+        // Avoid scrolling to bottom
+        textArea.style.position = 'fixed';
+        textArea.style.top =  '0';
+        textArea.style.left = '0';
+        textArea.style.width = '1px';
+        textArea.style.height = '1px';
+        textArea.style.padding = '0';
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          var successful = document.execCommand('copy');
+          if (!successful) {
+            alert('Fallback: Oops, unable to copy');
+          }
+        } catch (err) {
+          alert('Fallback: Oops, unable to copy');
+        }
+        document.body.removeChild(textArea);
+      }
+    })();
+  ")
+        )
+        #end button code
+      ),
+      div(
+        style = paste0(
+          "max-height: 180px; overflow-y: auto; padding: 4px; ",
+          "border: 1px solid #ddd; background: #f9f9f9;"
+        ),
         verbatimTextOutput("code_current")
       ),
 
       hr(),
 
       # 9) Accumulated‐selection code
-      h4("Accumulated‐selection code:"),
       div(
-        style = "max-height:180px; overflow-y:auto; padding:4px; border:1px solid #ddd; background:#f9f9f9;",
+        style = "display: flex; justify-content: space-between; align-items: center;",
+        h4("Accumulated‐selection code:"),
+        #this code is to make the "copy all" button work!
+        tags$button(
+          "Copy all",
+          type = "button",
+          onclick = HTML("
+    (function() {
+      var txtNode = document.getElementById('code_all');
+      if (!txtNode) {
+        alert('Could not find element to copy!');
+        return;
+      }
+      var textToCopy = txtNode.innerText || txtNode.textContent;
+
+      // First, try modern Clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy)
+          .catch(function(err) {
+            // If Clipboard API fails, fall back
+            fallbackCopyTextToClipboard(textToCopy);
+          });
+      } else {
+        // If Clipboard API unavailable, fall back
+        fallbackCopyTextToClipboard(textToCopy);
+      }
+
+      // Fallback implementation:
+      function fallbackCopyTextToClipboard(text) {
+        var textArea = document.createElement('textarea');
+        textArea.value = text;
+        // Avoid scrolling to bottom
+        textArea.style.position = 'fixed';
+        textArea.style.top =  '0';
+        textArea.style.left = '0';
+        textArea.style.width = '1px';
+        textArea.style.height = '1px';
+        textArea.style.padding = '0';
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          var successful = document.execCommand('copy');
+          if (!successful) {
+            alert('Fallback: Oops, unable to copy');
+          }
+        } catch (err) {
+          alert('Fallback: Oops, unable to copy');
+        }
+        document.body.removeChild(textArea);
+      }
+    })();
+  ")
+        )
+        #end button code
+
+      ),
+      div(
+        style = paste0(
+          "max-height: 180px; overflow-y: auto; padding: 4px; ",
+          "border: 1px solid #ddd; background: #f9f9f9;"
+        ),
         verbatimTextOutput("code_all")
       ),
+
 
       hr(),
 
@@ -226,10 +354,22 @@ server <- function(input, output, session) {
   # Whenever the Y‐variable changes, clear the “current selection” and outliers
   # ────────────────────────────────────────────────────────────────────────────
   observeEvent(input$yvar, {
+    req(input$yvar)                # ← ensure yvar is non‐NULL/non‐empty
     sel_keys(integer(0))
-    outlier_keys(integer(0))
+    #outlier_keys(integer(0))
     session$resetBrush("qc_plot")
+
+    # Re‐populate sel_keys() from removed_ts for this new yvar
+    # (removed_ts[[ yvar ]] might be a character vector of ts_str values)
+    current_ts <- removed_ts[[ input$yvar ]] %||% character()
+    if (length(current_ts)) {
+      matching_rows <- which(rv$df$ts_str %in% current_ts)
+      sel_keys(matching_rows)
+    } else {
+      sel_keys(integer(0))
+    }
   })
+
 
   # ────────────────────────────────────────────────────────────────────────────
   # Rebuild xvar/yvar dropdowns whenever new data arrives
@@ -365,6 +505,7 @@ server <- function(input, output, session) {
     df0 <- rv$df
     req(df0, input$xvar, input$yvar)
 
+
     dfc <- df0 %>%
       filter(
         !is.na(.data[[input$xvar]]),
@@ -395,6 +536,7 @@ server <- function(input, output, session) {
       marker = list(color = "#228833", opacity = 0.6)
     )
 
+    # Plot the ±σ outliers as red
     if (input$sd_thresh > 0) {
       p <- p %>%
         add_trace(
@@ -408,6 +550,7 @@ server <- function(input, output, session) {
         )
     }
 
+    # Plot the “accumulated” (orange) points on top
     if (length(sel_keys()) > 0) {
       p <- p %>%
         add_trace(
@@ -422,22 +565,33 @@ server <- function(input, output, session) {
         )
     }
 
+    # R2 value for ALL points,
+    # then fit a second time on (all points minus accumulated selections).
     if (input$show_reg && input$xvar != "TIMESTAMP_START") {
-      df_in <- if (input$sd_thresh > 0) filter(dfc, flag == "inlier") else dfc
-      if (nrow(df_in) >= 2) {
-        fit1   <- lm(reformulate(input$xvar, input$yvar), data = df_in)
-        r2_out <- round(summary(fit1)$r.squared, 2)
-        xseq   <- seq(
-          min(df_in[[input$xvar]], na.rm = TRUE),
-          max(df_in[[input$xvar]], na.rm = TRUE),
+      # 1) R² on ALL points (even the ±σ outliers)
+      df_all <- df0 %>%
+        filter(
+          !is.na(.data[[input$xvar]]),
+          !is.na(.data[[input$yvar]])
+        )
+
+      if (nrow(df_all) >= 2) {
+        fit_all <- lm(reformulate(input$xvar, input$yvar), data = df_all)
+        r2_all  <- round(summary(fit_all)$r.squared, 2)
+
+        # Add a gray regression line for all points:
+        xseq_all <- seq(
+          min(df_all[[input$xvar]], na.rm = TRUE),
+          max(df_all[[input$xvar]], na.rm = TRUE),
           length.out = 100
         )
-        preds  <- predict(fit1, newdata = setNames(data.frame(xseq), input$xvar))
+        preds_all <- predict(fit_all, newdata = setNames(data.frame(xseq_all), input$xvar))
+
 
         p <- p %>%
           add_lines(
-            x          = xseq,
-            y          = preds,
+            x          = xseq_all,
+            y          = preds_all,
             inherit    = FALSE,
             line       = list(color = "gray50"),
             showlegend = FALSE
@@ -449,7 +603,7 @@ server <- function(input, output, session) {
             y           = 1.00,
             xanchor     = "left",
             yanchor     = "bottom",
-            text        = paste0("<b>R² (outliers dropped) = ", r2_out, "</b>"),
+            text        = paste0("<b>R² (all points) = ", r2_all, "</b>"),
             showarrow   = FALSE,
             font        = list(size = 12),
             bgcolor     = "#F3919C",
@@ -457,17 +611,24 @@ server <- function(input, output, session) {
           )
       }
 
+      # 2) R² with accumulated points dropped
       acc_sel <- isolate(sel_keys())
       if (length(acc_sel) > 0) {
-        df_drop_sel <- df_in %>% filter(!(.row %in% acc_sel))
+        # Build a dataset that excludes the .row indices in acc_sel
+        df_drop_sel <- df0 %>%
+          filter(
+            !is.na(.data[[input$xvar]]),
+            !is.na(.data[[input$yvar]])
+          ) %>%
+          filter(!(.row %in% acc_sel))
+
         if (nrow(df_drop_sel) >= 2) {
-          r2_sel <- round(summary(lm(
-            reformulate(input$xvar, input$yvar),
-            data = df_drop_sel
-          ))$r.squared, 2)
+          fit_sel <- lm(reformulate(input$xvar, input$yvar), data = df_drop_sel)
+          r2_sel  <- round(summary(fit_sel)$r.squared, 2)
         } else {
           r2_sel <- NA_real_
         }
+
         p <- p %>%
           add_annotations(
             xref        = "paper",
@@ -537,7 +698,7 @@ server <- function(input, output, session) {
     sel_ts <- rv$df %>% filter(.row %in% keys) %>% pull(ts_str)
     conds  <- paste0("TIMESTAMP_START == '", sel_ts, "' ~ NA_real_", collapse = ",\n      ")
     paste0(
-      "df2 <- df2 %>%\n",
+      "df <- df %>%\n",
       "  mutate(\n",
       "    ", input$yvar, " = case_when(\n",
       "      ", conds, ",\n",
@@ -564,7 +725,7 @@ server <- function(input, output, session) {
       ts    <- all_removals[[var]]
       conds <- paste0("TIMESTAMP_START == '", ts, "' ~ NA_real_", collapse = ",\n      ")
       paste0(
-        "df2 <- df2 %>%\n",
+        "df <- df %>%\n",
         "  mutate(\n",
         "    ", var, " = case_when(\n",
         "      ", conds, ",\n",
@@ -592,7 +753,7 @@ server <- function(input, output, session) {
       collapse = ",\n      "
     )
     paste0(
-      "df2 <- df2 %>%\n",
+      "df <- df %>%\n",
       "  mutate(\n",
       "    ", input$yvar, " = case_when(\n",
       "      ", conds, ",\n",
@@ -688,3 +849,4 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+

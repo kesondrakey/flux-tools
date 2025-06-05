@@ -1,12 +1,12 @@
 Type: Package
 Package: fluxtools
 Title: Fluxtools: Interactive QA/QC for AmeriFlux Data
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person("Kesondra", "Key", , "keyke@iu.edu", role = c("aut", "cre"))
 Description: A Shiny-based interactive QA/QC tool for flux tower data
     processing. It generates data-point removal code with user-directed
-    point removal and can output a cleaned CSV.
+    point removal and can output a cleaned csv.
 License: MIT + file LICENSE
 URL: https://github.com/kesondrakey/fluxtools
 BugReports: https://github.com/kesondrakey/fluxtools/issues
