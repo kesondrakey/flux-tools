@@ -1,0 +1,9 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: Key
+  given-names: Kesondra
+title:kesondrakey/fluxtools: v0.1.1 (2025-06-04)
+version: v0.1.1
+date-released: 2025-06-04
+DOI: https://doi.org/10.5281/zenodo.15597309
