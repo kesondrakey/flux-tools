@@ -1,320 +1,337 @@
-# pkgs <- c("shiny", "plotly", "dplyr", "htmltools")
-# for (p in pkgs) {
-#   if (!requireNamespace(p, quietly = TRUE)) {
-#     install.packages(p)
-#   }
-# }
-# Now they’re guaranteed to be installed:
 library(shiny)
 library(plotly)
 library(dplyr)
+library(shinyBS)   # for bsTooltip()
+library(bslib)     # for theming
 
 # Allow larger uploads (here: up to 100 MB)
 options(shiny.maxRequestSize = 100 * 1024^2)
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Helper: turn an integer offset (e.g. -5) into an “Etc/GMT” string
-make_local_tz <- function(offset) {
-  if (offset == 0) return("UTC")
-  sign_chr <- if (offset < 0) "+" else "-"
-  abs_hr   <- abs(offset)
-  paste0("Etc/GMT", sign_chr, abs_hr)
-}
+## ── 1) Theme ───────────────────────────────────────────────────────
+light_theme <- bs_theme(
+  version = 5,
+  bootswatch = "cerulean")
+
+
+dark_theme  <- bs_theme(
+  version   = 5,
+  bootswatch= "slate",
+  fg        = "#EEE",
+  bg        = "#222",
+  input_bg  = "#333",
+  input_fg  = "#EEE"
+)
 
 ui <- fluidPage(
-  titlePanel("fluxtools: Interactive QA/QC with Code Generator"),
+  theme = light_theme,   # ← important!
+
+  # client‐side handler for copying text
+  tags$head(
+    tags$style(HTML("
+      /* unify font size */
+      body.dark-mode { font-size: 1rem !important; }
+
+      /* global dark-mode form overrides */
+      body.dark-mode .form-control,
+      body.dark-mode .form-select,
+      body.dark-mode .shiny-file-input .btn,
+      body.dark-mode .selectize-control .selectize-input,
+      body.dark-mode .selectize-control .selectize-dropdown,
+      body.dark-mode .selectize-dropdown-content .option {
+        background-color: #333 !important;
+        color:            #EEE !important;
+        border-color:     #555 !important;
+      }
+
+      /* catch any stray selectize “items” (the little pills) */
+      body.dark-mode .selectize-input.items .item,
+      body.dark-mode .selectize-input.items.has-options {
+        color: #EEE !important;
+      }
+
+      /* re-float the copy button */
+      .copy-button-col {
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        padding-left: 0 !important;
+        padding-right: 1rem !important;
+      }
+  ")),
+    tags$script(HTML("
+    function copyVisibleCode(){
+      var which = document.querySelector('input[name=code_choice]:checked').value;
+      var srcId = which==='current' ? 'code_current' : 'code_all';
+      var ta    = document.createElement('textarea');
+      ta.value  = document.getElementById(srcId).innerText;
+      ta.readOnly = true;
+      ta.style.position = 'absolute'; ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+      Shiny.setInputValue('did_copy_code', Math.random());
+    }
+    document.addEventListener('shiny:connected', function(){
+      var btn = document.getElementById('copy_code_btn');
+      if(btn) btn.onclick = copyVisibleCode;
+    });
+  "))
+  ),
+
+  ## ── 2) Title + help link ───────────────────────────────────────────
+  titlePanel(
+    div(
+      "fluxtools: Interactive QA/QC with Code Generator",
+      actionLink("help", label = icon("question-circle"), style = "margin-left:10px;")
+    )
+  ),
+
+  ## ── 3) Subtitle ─────────────────────────────────────────────────────
   uiOutput("subtitle"),
+
+  ## ── 4) Main layout ─────────────────────────────────────────────────
   sidebarLayout(
+
+    ### Sidebar with all your controls
     sidebarPanel(
       width = 4,
 
-      # 1) file upload
-      fileInput(
-        "csv_file",
-        "Upload Ameriflux-style .csv:",
-        accept = ".csv"
+      # Upload
+      fileInput("csv_file", "Upload Ameriflux‐style .csv:", accept = ".csv"),
+
+      # Year filter
+      tagAppendAttributes(
+        selectizeInput("year_sel", "Select Year(s):", choices  = NULL, multiple = TRUE,
+                       options  = list(placeholder = "– upload to load year(s) –",
+                                       plugins     = list("remove_button")),
+                       width = "100%"),
+        'data-bs-toggle' = "tooltip",
+        title            = "Filter to one or more years"
       ),
-
-      # 1a) YEAR selector (populated after upload)
-      selectizeInput(
-        "year_sel",
-        "Select Year(s):",
-        choices  = NULL,
-        multiple = TRUE,
-        options  = list(
-          placeholder    = "– upload a file to see year(s) –",
-          onInitialize   = I("function() { this.setValue('All'); }"),
-          plugins        = list("remove_button")
-        )
-      ),
-
-
       hr(),
 
-      # 2) dropdowns for x‐ and y‐variables
-      selectInput("yvar", "Y-axis:", choices = NULL),
-      selectInput("xvar", "X-axis:", choices = NULL),
-
-      # 3) “Add current selection” and “Reset Current Selection” side by side
+      # new inline axes row:
       fluidRow(
         column(
-          width = 6,
-          actionButton("add_sel", "Add current selection to accumulated", width = "100%")
+          6,
+          tags$label(
+            `for`  = "yvar",
+            "Y-axis:",
+            style  = "width:100%; font-weight:500;"
+          ),
+          tagAppendAttributes(
+            selectInput(
+              "yvar", NULL, choices = NULL, width = "100%"
+            ),
+            'data-bs-toggle' = "tooltip",
+            title            = "Select your Y-axis variable — the column whose values will be set to NA"
+          )
         ),
+
         column(
-          width = 6,
-          actionButton(
-            "clear_sel",
-            HTML("<span style='color:#474747; font-weight:bold;'>Reset Current Selection</span>"),
-            width = "100%"
+          6,
+          tags$label(
+            `for`  = "xvar",
+            "X-axis:",
+            style  = "width:100%; font-weight:500;"
+          ),
+          tagAppendAttributes(
+            selectInput(
+              "xvar", NULL, choices = NULL, width = "100%"
+            ),
+            'data-bs-toggle' = "tooltip",
+            title            = "Select your X-axis variable"
           )
         )
       ),
+      hr()
+      ,
 
-      # 4) “Remove from accumulated” and “Reset ALL Filters” side by side
+      #correct ()
+      # Manual selection row
       fluidRow(
-        column(
-          width = 6,
-          actionButton("remove_acc", "Remove from accumulated", width = "100%")
+        column(6,actionButton("add_sel", "Select Data",
+                              width="100%",
+                              icon = icon("check"),
+                              'data-bs-toggle'="tooltip",
+                              title="Add the selected points to the cccumulated removal code")
         ),
-        column(
-          width = 6,
-          actionButton(
-            "reset_all",
-            HTML("<span style='color:#2E2E2E; font-weight:bold;'>Reset ALL Filters</span>"),
-            width = "100%"
-          )
+        column(6,
+               actionButton("clear_sel","Clear Selection",
+                            width = "100%",
+                            icon = icon("broom"),
+                            'data-bs-toggle'="tooltip",
+                            title="Clear the current selection from the accumulated removal code")
         )
       ),
 
-      # 5) a bit of spacing, then “Confirm Remove” on its own line
+      # Accumulated‐selection row
+      fluidRow(
+        column(6,
+               actionButton("remove_acc","Remove from Accumulated",
+                            width = "100%",
+                            icon = icon("ban"),
+                            'data-bs-toggle'="tooltip",
+                            title="Remove current selection from the accumulated removal code")
+        ),
+        column(6,
+               actionButton("remove","Apply removals",
+                            width = "100%",
+                            icon = icon("trash"),
+                            'data-bs-toggle'="tooltip",
+                            title="Turn the current Y‐values into NA's and remove from view")
+        )
+      ),
+
       tags$br(),
-      actionButton("remove", "Confirm Remove"),
-
       hr(),
 
-      # 6) Outlier slider + buttons
-      sliderInput(
-        "sd_thresh",
-        "Highlight points beyond (σ):",
-        min   = 0,
-        max   = 3,
-        value = 0,    # ← default is 0σ
-        step  = 1
-      ),
+      # Outlier controls
+      sliderInput("sd_thresh", "Highlight points beyond (σ):", min = 0, max = 3, value = 0, step = 1),
       checkboxInput("show_reg", "Show regression line & R²", value = TRUE),
+
+      #outliers
       fluidRow(
-        column(
-          width = 6,
-          actionButton("add_outliers", "Add all ±σ outliers", width = "100%")
+        column(6,
+               tagAppendAttributes(
+                 actionButton("add_outliers", "Select all ±σ outliers", width="100%"),
+                 'data-bs-toggle' = "tooltip",
+                 title            = "Select every point whose residual is beyond ±σ and add to the accumulated code"
+               ),
         ),
-        column(
-          width = 6,
-          actionButton("clear_outliers", "Clear ±σ outlier selection", width = "100%")
+        column(6,
+               tagAppendAttributes(
+                 actionButton("clear_outliers", "Clear ±σ outliers", width="100%"),
+                 'data-bs-toggle' = "tooltip",
+                 title            = "Remove ±σ outliers from your the accumulated code"
+               )
         )
       ),
 
-      hr(),
-
-      # 7) Preview selection
-      h4("Preview selection:"),
-      div(
-        style = "max-height:200px; overflow-y:auto; padding:4px; border:1px solid #ddd;",
-        tableOutput("preview")
-      ),
 
       hr(),
 
-      # 8) Current‐selection code
-      div(
-        style = "display: flex; justify-content: space-between; align-items: center;",
-        h4("Current‐selection code:"),
-        # Single‐line JS, no stray line breaks:
-        #this code is to make the "copy all" button work!
-        tags$button(
-          "Copy all",
-          type = "button",
-          onclick = HTML("
-    (function() {
-      var txtNode = document.getElementById('code_current');
-      if (!txtNode) {
-        alert('Could not find element to copy!');
-        return;
-      }
-      var textToCopy = txtNode.innerText;
 
-      // First, try modern Clipboard API
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(textToCopy)
-          .then(function() { /* success – silently do nothing */ })
-          .catch(function(err) {
-            // If Clipboard API fails, fall back
-            fallbackCopyTextToClipboard(textToCopy);
-          });
-      } else {
-        // If Clipboard API unavailable, fall back
-        fallbackCopyTextToClipboard(textToCopy);
-      }
-
-      // Fallback implementation:
-      function fallbackCopyTextToClipboard(text) {
-        var textArea = document.createElement('textarea');
-        textArea.value = text;
-        // Avoid scrolling to bottom
-        textArea.style.position = 'fixed';
-        textArea.style.top =  '0';
-        textArea.style.left = '0';
-        textArea.style.width = '1px';
-        textArea.style.height = '1px';
-        textArea.style.padding = '0';
-        textArea.style.border = 'none';
-        textArea.style.outline = 'none';
-        textArea.style.boxShadow = 'none';
-        textArea.style.background = 'transparent';
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-          var successful = document.execCommand('copy');
-          if (!successful) {
-            alert('Fallback: Oops, unable to copy');
-          }
-        } catch (err) {
-          alert('Fallback: Oops, unable to copy');
-        }
-        document.body.removeChild(textArea);
-      }
-    })();
-  ")
-        )
-        #end button code
-      ),
-      div(
-        style = paste0(
-          "max-height: 180px; overflow-y: auto; padding: 4px; ",
-          "border: 1px solid #ddd; background: #f9f9f9;"
-        ),
-        verbatimTextOutput("code_current")
-      ),
-
-      hr(),
-
-      # 9) Accumulated‐selection code
-      div(
-        style = "display: flex; justify-content: space-between; align-items: center;",
-        h4("Accumulated‐selection code:"),
-        #this code is to make the "copy all" button work!
-        tags$button(
-          "Copy all",
-          type = "button",
-          onclick = HTML("
-    (function() {
-      var txtNode = document.getElementById('code_all');
-      if (!txtNode) {
-        alert('Could not find element to copy!');
-        return;
-      }
-      var textToCopy = txtNode.innerText || txtNode.textContent;
-
-      // First, try modern Clipboard API
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(textToCopy)
-          .catch(function(err) {
-            // If Clipboard API fails, fall back
-            fallbackCopyTextToClipboard(textToCopy);
-          });
-      } else {
-        // If Clipboard API unavailable, fall back
-        fallbackCopyTextToClipboard(textToCopy);
-      }
-
-      // Fallback implementation:
-      function fallbackCopyTextToClipboard(text) {
-        var textArea = document.createElement('textarea');
-        textArea.value = text;
-        // Avoid scrolling to bottom
-        textArea.style.position = 'fixed';
-        textArea.style.top =  '0';
-        textArea.style.left = '0';
-        textArea.style.width = '1px';
-        textArea.style.height = '1px';
-        textArea.style.padding = '0';
-        textArea.style.border = 'none';
-        textArea.style.outline = 'none';
-        textArea.style.boxShadow = 'none';
-        textArea.style.background = 'transparent';
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-          var successful = document.execCommand('copy');
-          if (!successful) {
-            alert('Fallback: Oops, unable to copy');
-          }
-        } catch (err) {
-          alert('Fallback: Oops, unable to copy');
-        }
-        document.body.removeChild(textArea);
-      }
-    })();
-  ")
-        )
-        #end button code
-
-      ),
-      div(
-        style = paste0(
-          "max-height: 180px; overflow-y: auto; padding: 4px; ",
-          "border: 1px solid #ddd; background: #f9f9f9;"
-        ),
-        verbatimTextOutput("code_all")
-      ),
-
-
-      hr(),
-
-      # # 10) Removed data points (as a code snippet)
-      # h4("Removed data points:"),
-      # div(
-      #   style="max-height:180px; overflow-y:auto; padding:4px; border:1px solid #ddd; background:#f9f9f9;",
-      #   verbatimTextOutput("removed_code")
-      #   # style = "max-height:150px; overflow-y:auto; padding:4px; border:1px solid #ddd; background:#f9f9f9;",
-      #   # verbatimTextOutput("removed_code")
-      # ),
-      #
-      # hr(),
-
-      # 11) Download & Reset‐Data buttons
       fluidRow(
+        style = "display: flex; align-items: center; margin-bottom: 0.5rem;",
         column(
-          width = 6,
-          downloadButton("download_data", "Download cleaned CSV", width = "100%")
+          width = 8, style = "padding-right: 0;",
+          radioButtons(
+            "code_choice", NULL,
+            choiceNames  = list(
+              tagList(icon("code"), HTML("&nbsp;Current")),
+              tagList(icon("list-ul"), HTML("&nbsp;Accumulated"))
+            ),
+            choiceValues = c("current", "all"),
+            inline       = TRUE
+          )
         ),
         column(
-          width = 6,
-          actionButton("reset_data", "Reset Data", width = "100%")
+          width = 4, class = "copy-button-col",
+          tags$button(
+            id    = "copy_code_btn",
+            type  = "button",
+            class = "btn btn-outline-secondary",       # ← use outline so it’s lighter on dark
+            'data-bs-toggle' = "tooltip",
+            title = "Copy visible code",
+            icon("clipboard"),
+            onclick = HTML("
+            // pick current or accumulated
+            var which = document.querySelector('input[name=code_choice]:checked').value;
+            var srcId = which==='current' ? 'code_current' : 'code_all';
+            var txt   = document.getElementById(srcId).innerText;
+            // old‐school textarea hack
+            var ta = document.createElement('textarea');
+            ta.value = txt;
+            ta.setAttribute('readonly','');
+            ta.style.position = 'absolute';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            // fire an input event so Shiny can show its own toast
+            Shiny.setInputValue('did_copy_code', Math.random());
+          "),
+          )
+        )
+      ),
+
+
+      # the actual code box (must have IDs matching the above JS)
+      uiOutput("code_ui"),
+
+      # only show this when 'Accumulated' is selected
+      conditionalPanel(
+        "input.code_choice == 'all'",
+        actionButton(
+          "reset_accum", "Clear accumulated",
+          width = "100%",
+          'data-bs-toggle'="tooltip",
+          title = "Remove all points from accumulated list")),
+      hr(),
+
+
+      # Download & reset
+      # in your sidebarPanel, toward the bottom
+      fluidRow(
+        column(4, downloadButton("download_data", "Export cleaned data",
+                                 icon = icon("file-archive"), width="100%"),
+               'data-bs-toggle'="tooltip",
+               title="Download a .zip containing the cleaned CSV (with NAs applied using the 'Apply Removals' button) and the removal R-script"),
+
+        column(4, actionButton("reset_data", "Reload original data",
+                               icon = icon("eraser"), width="100%"),
+               'data-bs-toggle'="tooltip",
+               title="Reset any changes by re-loading the original .csv file"),
+
+        column(4, div(style="margin-top:0.5em;",checkboxInput("dark_mode","Dark mode",FALSE))
         )
       )
-    ),
+
+    ),# ← CLOSE sidebarPanel() here
+
+
+
+
+
+
 
     mainPanel(
       width = 8,
-      plotlyOutput("qc_plot", height = "80vh")
+      plotlyOutput("qc_plot", width = "100%", height = "80vh")#help with different resolutions
+      #plotlyOutput("qc_plot", height = "80vh")
     )
-  )
+  )  # ← close sidebarLayout()
 )
+
+
 
 
 server <- function(input, output, session) {
   output$subtitle <- renderUI({
     req(input$yvar)
+    col <- if (isTRUE(input$dark_mode)) "#DDD" else "#555"
     tags$h5(
       paste("Filtering out:", input$yvar),
-      style = "color:#555; margin-top:-10px; margin-bottom:20px;"
+      style = sprintf("color:%s; margin-top:-10px; margin-bottom:20px;", col)
     )
   })
 
+  observeEvent(input$did_copy_code, {
+    showNotification("Code copied ✅", type="message", duration = 1)
+  })
+
   # 1) “Injected” offset → local_tz
-  offset   <- getOption("shiny.initialOffset", default = -5)
-  local_tz <- make_local_tz(offset)
+  # 1) “Injected” offset → local_tz (inline, no helper)
+  offset   <- getOption("shiny.initialOffset", default = 0)
+  local_tz <- if (offset == 0) {
+    "UTC"
+  } else {
+    # note: Etc/GMT signs are inverted: Etc/GMT+5 == UTC-5
+    sign_chr <- if (offset < 0) "+" else "-"
+    paste0("Etc/GMT", sign_chr, abs(offset))
+  }
 
   # 2a) Read raw CSV
   raw_df <- reactive({
@@ -346,6 +363,53 @@ server <- function(input, output, session) {
   rv      <- reactiveValues(df = NULL)
   orig_df <- reactiveVal(NULL)
 
+  #code box
+  output$code_ui <- renderUI({
+    bg     <- if (input$dark_mode) "#2e2e2e" else "#f9f9f9"
+    fg     <- if (input$dark_mode) "#EEE"    else "#000"
+    border <- if (input$dark_mode) "#555"    else "#ddd"
+
+    sel <- if (input$code_choice=="current") "code_current" else "code_all"
+
+    div(
+      style = sprintf(
+        "height:200px; overflow-y:auto; border:1px solid %s; background:%s; color:%s; padding:8px;",
+        border, bg, fg
+      ),
+      verbatimTextOutput(sel)
+    )
+  })
+
+  # toggle a 'dark-mode' class on <body>
+  observe({
+    addClass  <- if (isTRUE(input$dark_mode)) "dark-mode" else ""
+    removeClass <- if (isTRUE(input$dark_mode)) "" else "dark-mode"
+    session$sendCustomMessage("toggleBodyClass", list(add=addClass, remove=removeClass))
+  })
+
+
+
+
+
+  observeEvent(input$reset_accum, {
+    removed_ts[[input$yvar]] <- NULL
+    sel_keys(integer(0))
+    outlier_keys(integer(0))
+    session$resetBrush("qc_plot")
+  })
+
+
+  #Copy all logic
+  observeEvent(input$copy_code, {
+    which_id <- if (input$code_choice == "current") "code_current" else "code_all"
+    session$sendCustomMessage("doCopy", which_id)
+  })
+
+
+
+
+
+
   # ────────────────────────────────────────────────────────────────────────────
   # When a new file arrives, place it into rv$df, record original copy,
   # and populate “year_sel” with “All” + each unique year
@@ -374,12 +438,23 @@ server <- function(input, output, session) {
       return(rv$df)
     }
 
+
     # Otherwise, drop "All" (if present) and filter by the remaining years:
     chosen_years <- setdiff(input$year_sel, "All")
 
     rv$df %>%
       filter(format(TIMESTAMP_START, "%Y") %in% chosen_years)
   })
+
+  #  Clear *current* selection in the code box:
+  observeEvent(input$clear_sel, {
+    # 1) clear the lasso brush
+    session$resetBrush("qc_plot")
+    # 2) clear the “current” keys
+    sel_keys(integer(0))
+  })
+
+
 
 
   # Track manual selections / removals
@@ -482,6 +557,40 @@ server <- function(input, output, session) {
         )
       )
   })
+
+
+  ###Theme
+  # dark-mode toggle
+  # observe({
+  #   cls <- if (input$dark_mode) "dark-mode" else ""
+  #   session$sendCustomMessage("toggleBodyClass", list(add=cls, remove=cls?"" : "dark-mode"))
+  # })
+
+  observe({
+    session$setCurrentTheme(
+      if (isTRUE(input$dark_mode)) dark_theme else light_theme
+    )
+  })
+
+  #how-to
+  observeEvent(input$help, {
+    showModal(modalDialog(
+      title = "Quick Start: fluxtools QA/QC",
+      tagList(
+        tags$h4("1. Upload & Filter"),
+        tags$p("Upload your Ameriflux CSV, then pick years and variables to explore."),
+
+        tags$h4("2. Select Points"),
+        tags$p("Select points on the plot with the box, lasso, or use the σ‐slider → Add to accumulated list by clicking 'Select Data'."),
+
+        tags$h4("3. Confirm & Download"),
+        tags$p("Hit “Confirm Remove” to set values to NA (and remove from the plot), then download your cleaned data + R script.")
+      ),
+      easyClose = TRUE,
+      footer = modalButton("Got it!")
+    ))
+  })
+
 
   # ────────────────────────────────────────────────────────────────────────────
   # Button logic: add/remove outliers & manual selection accumulation
@@ -619,6 +728,18 @@ server <- function(input, output, session) {
         )
     }
 
+
+    #plotly theme dark vs light mode
+    if (isTRUE(input$dark_mode)) {
+      p <- p %>% layout(
+        template    = "plotly_dark",
+        paper_bgcolor = "#2E2E2E",
+        plot_bgcolor  = "#2E2E2E",
+        font = list(color = "white")
+      )
+    }
+
+
     # R2 value for ALL points,
     # then fit a second time on (all points minus accumulated selections).
     if (input$show_reg && input$xvar != "TIMESTAMP_START") {
@@ -641,6 +762,9 @@ server <- function(input, output, session) {
         )
         preds_all <- predict(fit_all, newdata = setNames(data.frame(xseq_all), input$xvar))
 
+        r2_bg_all <- if (isTRUE(input$dark_mode)) "#810E1C" else "#F3919C"
+        r2_bg_sel <- if (isTRUE(input$dark_mode)) "#9F5500" else "#FFC65C"
+
 
         p <- p %>%
           add_lines(
@@ -660,8 +784,8 @@ server <- function(input, output, session) {
             text        = paste0("<b>R² (all points) = ", r2_all, "</b>"),
             showarrow   = FALSE,
             font        = list(size = 12),
-            bgcolor     = "#F3919C",
-            bordercolor = "black"
+            bgcolor     = r2_bg_all,
+            bordercolor = list(color = if (isTRUE(input$dark_mode)) "#EEE" else "black")
           )
       }
 
@@ -694,15 +818,23 @@ server <- function(input, output, session) {
             text        = paste0("<b>R² (sel dropped) = ", r2_sel, "</b>"),
             showarrow   = FALSE,
             font        = list(size = 12),
-            bgcolor     = "#FFC65C",
-            bordercolor = "black"
+            bgcolor     = r2_bg_sel,
+            bordercolor = list(color = if (isTRUE(input$dark_mode)) "#EEE" else "black")
           )
       }
     }
 
     p %>%
       layout(
+        autosize = TRUE,#helps with resolution
+
         dragmode = "select",
+        # bump up all text a bit
+        font   = list(size = 14),#plot text size
+        # loosen the margins so big titles don’t get clipped
+        margin = list(l = 80, r = 20, b = 80, t = 20),
+        #end plot edits
+
         xaxis    = if (input$xvar == "TIMESTAMP_START") {
           list(type = "date", tickformat = "%b %d\n%H:%M", title = input$xvar)
         } else {
@@ -745,7 +877,7 @@ server <- function(input, output, session) {
     if (length(keys) == 0) {
       return("
 
-<!-- draw a box or lasso (or click “Add current selection”) to see its code here -->
+<!-- draw a box or lasso (or click “Select Data”) to see its code here -->
 
 ")
     }
@@ -771,7 +903,7 @@ server <- function(input, output, session) {
     if (length(all_removals) == 0) {
       return("
 
-<!-- click “Add current selection” or “Add all ±σ outliers” → see code here -->
+<!-- click “Select Data” or “Add all ±σ outliers” → see code here -->
 
 ")
     }
@@ -878,6 +1010,22 @@ server <- function(input, output, session) {
   )
 
 
+  #remove from accumulated button logic
+  observeEvent(input$remove_acc, {
+    keys <- selected_keys()
+    if (length(keys) == 0) return()
+
+    # 1) remove those rows from the sel_keys (orange “accumulated” points)
+    sel_keys(setdiff(isolate(sel_keys()), keys))
+
+    # 2) remove their ts_str from removed_ts[[yvar]]
+    ts_to_drop <- df_by_year() %>% filter(.row %in% keys) %>% pull(ts_str)
+    old       <- removed_ts[[ input$yvar ]] %||% character()
+    removed_ts[[ input$yvar ]] <- setdiff(old, ts_to_drop)
+  })
+
+
+
 
 
 
@@ -909,6 +1057,7 @@ server <- function(input, output, session) {
     removed_ts[[input$yvar]] <- setdiff(
       removed_ts[[input$yvar]] %||% character(),
       ts_removed
+
     )
     sel_keys(integer(0))
     outlier_keys(integer(0))
@@ -920,21 +1069,17 @@ server <- function(input, output, session) {
   # Reset Data → restore df_by_year() to orig_df() and clear all removal records
   # ────────────────────────────────────────────────────────────────────────────
   observeEvent(input$reset_data, {
-    df0 <- orig_df()
-    req(df0)
-    df_by_year() <- df0
+    # 1) restore the master data
+    rv$df <- orig_df()
 
-    for (nm in names(reactiveValuesToList(removed_ts))) {
-      removed_ts[[nm]] <- NULL
-    }
-    for (nm in names(reactiveValuesToList(confirmed_ts))) {
-      confirmed_ts[[nm]] <- NULL
-    }
-    sel_keys(integer(0))
-    outlier_keys(integer(0))
+    # 2) reset any year‐filter back to “All”
+    updateSelectizeInput(session, "year_sel", selected = "All")
+
+    # 3) clear out all your selections
+    for (nm in names(reactiveValuesToList(removed_ts))) removed_ts[[nm]] <- NULL
+    sel_keys(integer(0)); outlier_keys(integer(0))
     session$resetBrush("qc_plot")
   })
 }
 
 shinyApp(ui, server)
-

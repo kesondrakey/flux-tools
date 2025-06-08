@@ -578,25 +578,14 @@ server <- function(input, output, session) {
       title = "Quick Start: fluxtools QA/QC",
       tagList(
         tags$h4("1. Upload & Filter"),
-        tags$p("Upload your Ameriflux-style .csv, then pick years if you want, and you x and y variables to explore (Note: the Y-variables are set to be removed)"),
+        tags$p("Upload your Ameriflux CSV, then pick years and variables to explore."),
 
-        tags$h4("2. Select Data"),
-        tags$p("Use box- or lasso-select (or the σ-slider buttons) on the plot, then click “Select Data” or “Select all ±σ outliers” to accumulate points to remove"),
+        tags$h4("2. Select Points"),
+        tags$p("Select points on the plot with the box, lasso, or use the σ‐slider → Add to accumulated list by clicking 'Select Data'."),
 
-        tags$h4("3. Manage selections"),
-        tags$ul(
-          tags$li(tags$b("Copy code:"), " toggle between “Current” and “Accumulated” and click the clipboard icon to copy the R snippet for y-variable removal"),
-          tags$li(tags$b("Unselect points:"), " box- or lasso-select them, then click “Remove from Accumulated”"),
-          tags$li(tags$b("Clear selection:"), " click “Clear Selection” to reset the current plot selection"),
-          tags$li(tags$b("Clear outliers:"), " click “Clear ±σ Outliers” to unflag all ±σ points"),
-          tags$li(tags$b("Full reset:"), " click “Reload original data” at the bottom to restore your dataset")
-        ),
-
-        tags$h4("4. Apply removals & download"),
-        tags$p("Click “Apply removals” to set the selected Y-values to NA (and clear them from the plot), then “Export cleaned data” to download your cleaned .csv and R-script")
-
-
-        ),
+        tags$h4("3. Confirm & Download"),
+        tags$p("Hit “Confirm Remove” to set values to NA (and remove from the plot), then download your cleaned data + R script.")
+      ),
       easyClose = TRUE,
       footer = modalButton("Got it!")
     ))
