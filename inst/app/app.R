@@ -7,6 +7,9 @@ library(bslib)     # for theming
 # Allow larger uploads (here: up to 100 MB)
 options(shiny.maxRequestSize = 100 * 1024^2)
 
+# Expose inst/doc as /docs inside the Shiny app:
+addResourcePath("docs", system.file("doc", package = "fluxtools"))
+
 ## ── 1) Theme ───────────────────────────────────────────────────────
 light_theme <- bs_theme(
   bootswatch = "cerulean")
@@ -571,95 +574,73 @@ server <- function(input, output, session) {
     )
   })
 
-  #how-to
-  observeEvent(input$help, {
-    showModal(modalDialog(
-      title = "Quick Start: fluxtools QA/QC",
-      tagList(
-        tags$h4("1. Upload & Choose Variables"),
-        tags$ul(
-          tags$li(tags$b("Upload")," your AmeriFlux CSV (≤ 100 MB; multi-year enabled)"),
-          tags$li(tags$b("X-axis:")," time (TIMESTAMP_START) by default"),
-          tags$li(tags$b("Y-axis:")," variable you’ll remove (e.g. FC_1_1_1)"),
-          tags$li(tags$b("Year filter")," (all years selected by default)"),
-          tags$li(tags$b("Theme")," Toggle dark/light theme via the switch at bottom right on the left side panel"),
-        ),
+  # inside server()
+  helpModal <- function() {
+    shiny::modalDialog(
+      title     = "Help: fluxtools QA/QC",
+      tabsetPanel(
+        id = "help_tabs",
+        tabPanel(
+          "Quick Start",
+          tagList(
+            tags$ul(
+                  tags$h4("1. Upload & Choose Variables"),
+                  tags$ul(
+                    tags$li(tags$b("Upload")," your AmeriFlux CSV (≤ 100 MB; multi-year enabled)"),
+                    tags$li(tags$b("X-axis:")," time (TIMESTAMP_START) by default"),
+                    tags$li(tags$b("Y-axis:")," variable you’ll remove (e.g. FC_1_1_1)"),
+                    tags$li(tags$b("Year filter")," (all years selected by default)"),
+                    tags$li(tags$b("Theme")," Toggle dark/light theme via the switch at bottom right on the left side panel")
+                  ),
 
-        tags$h4("2. Flag Data"),
-        tags$ul(
-          tags$li(
-            "Box- or lasso-select points → ",
-            tags$b("Flag Data")
-          ),
-          tags$li(
-            "Or click ",
-            tags$b("Select ±σ outliers"),
-            " to auto-flag residuals"
+                tags$h4("2. Flag Data"),
+                tags$ul(
+                  tags$li("Box- or lasso-select points → ",tags$b("Flag Data")),
+                  tags$li("Or click ",tags$b("Select ±σ outliers")," to auto-flag residuals")
+                ),
+
+                tags$h4("3. Review & Copy Code"),
+                tags$p("Switch between the ",tags$b("Current")," and ",tags$b("Accumulated")," code tabs, then click 📋 to copy the R snippet for y-variable removal"
+                ),
+
+                tags$h4("4. Undo & Reset"),
+                tags$ul(
+                  tags$li(tags$b("Unselect points:")," box- or lasso-select them, then click ",tags$b("Unflag Data")),
+                  tags$li(tags$b("Clear selection:")," click ",tags$b("Clear Selection")," to reset the current plot selection"),
+                  tags$li(tags$b("Clear outliers:")," click ",tags$b("Clear ±σ Outliers")," to unflag all ±σ points"),
+                  tags$li(tags$b("Full reset:")," click ",tags$b("Reload original data")," at the bottom to restore your dataset")
+                  ),
+
+                tags$h4("5. Apply Removals"),
+                tags$p("Click ",tags$b("Apply removals")," to set the selected Y-values to NA and remove these points from view"
+                ),
+
+                tags$h4("6. Export cleaned data"),
+                tags$p("If you’ve used ",tags$b("Apply removals"),", download your cleaned .csv and R-script via ",
+                       tags$b("Export cleaned data")," on the bottom left")
+            )
           )
         ),
-
-        tags$h4("3. Review & Copy Code"),
-        tags$p(
-          "Switch between the ",
-          tags$b("Current"),
-          " and ",
-          tags$b("Accumulated"),
-          " code tabs, then click 📋 to copy the R snippet for y-variable removal"
-        ),
-
-        tags$h4("4. Undo & Reset"),
-        tags$ul(
-          tags$li(
-            tags$b("Unselect points:"),
-            " box- or lasso-select them, then click ",
-            tags$b("Unflag Data")
-          ),
-          tags$li(
-            tags$b("Clear selection:"),
-            " click ",
-            tags$b("Clear Selection"),
-            " to reset the current plot selection"
-          ),
-          tags$li(
-            tags$b("Clear outliers:"),
-            " click ",
-            tags$b("Clear ±σ Outliers"),
-            " to unflag all ±σ points"
-          ),
-          tags$li(
-            tags$b("Full reset:"),
-            " click ",
-            tags$b("Reload original data"),
-            " at the bottom to restore your dataset"
+        tabPanel(
+          "Full Vignette",
+          tags$iframe(
+            src    = "docs/introduction.html",
+            width  = "100%",
+            height = "600px",
+            style  = "border:none;"
           )
-        ),
-
-        tags$h4("5. Apply Removals"),
-        tags$p(
-          "Click ",
-          tags$b("Apply removals"),
-          " to set the selected Y-values to NA and remove these points from view"
-        ),
-
-        tags$h4("6. Export cleaned data"),
-        tags$p(
-          "If you’ve used ",
-          tags$b("Apply removals"),
-          ", download your cleaned .csv and R-script via ",
-          tags$b("Export cleaned data"),
-          " on the bottom left"
-        ),
-
-        tags$hr(),
-        tags$p(
-          "For full instructions, check out the ",
-          tags$a(href="file:///E:/Github/fluxtools/inst/doc/introduction.html", "vignette")
         )
-        ),
+      ),           # <-- closes tabsetPanel()
       easyClose = TRUE,
-      footer = modalButton("Got it!")
-    ))
+      size      = "l"
+    )             # <-- closes modalDialog()
+  }               # <-- closes helpModal()
+
+  observeEvent(input$help, {
+    shiny::showModal(helpModal())
   })
+
+
 
 
   # ────────────────────────────────────────────────────────────────────────────
