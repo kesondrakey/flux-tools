@@ -154,7 +154,7 @@ ui <- fluidPage(
                               width="100%",
                               icon = icon("check"),
                               'data-bs-toggle'="tooltip",
-                              title="Add the selected points to the cccumulated removal code")
+                              title="Add the selected points to the accumulated removal code")
         ),
         column(6,
                actionButton("clear_sel","Clear Selection",
@@ -179,7 +179,7 @@ ui <- fluidPage(
                             width = "100%",
                             icon = icon("trash"),
                             'data-bs-toggle'="tooltip",
-                            title="Turn the current Y‐values into NA's and remove from view")
+                            title="Turn the currently selected Y‐values into NA's and remove from view")
         )
       ),
 
