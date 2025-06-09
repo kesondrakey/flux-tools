@@ -196,14 +196,14 @@ ui <- fluidPage(
                tagAppendAttributes(
                  actionButton("add_outliers", "Select all ±σ outliers", width="100%"),
                  'data-bs-toggle' = "tooltip",
-                 title            = "Select every point whose residual is beyond ±σ and add to the accumulated code"
+                 title            = "Select every point whose residual is beyond ± n standard deviations (σ) from the regression line and add to the accumulated code"
                ),
         ),
         column(6,
                tagAppendAttributes(
                  actionButton("clear_outliers", "Clear ±σ outliers", width="100%"),
                  'data-bs-toggle' = "tooltip",
-                 title            = "Remove ±σ outliers from your the accumulated code"
+                 title            = "Remove ± n standard deviations (σ) from the regression line from your the accumulated code"
                )
         )
       ),
@@ -577,25 +577,85 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Quick Start: fluxtools QA/QC",
       tagList(
-        tags$h4("1. Upload & Filter"),
-        tags$p("Upload your Ameriflux-style .csv, then pick years if you want, and you x and y variables to explore (Note: the Y-variables are set to be removed)"),
-
-        tags$h4("2. Select Data"),
-        tags$p("Use box- or lasso-select (or the σ-slider buttons) on the plot, then click “Select Data” or “Select all ±σ outliers” to accumulate points to remove"),
-
-        tags$h4("3. Manage selections"),
+        tags$h4("1. Upload & Choose Variables"),
         tags$ul(
-          tags$li(tags$b("Copy code:"), " toggle between “Current” and “Accumulated” and click the clipboard icon to copy the R snippet for y-variable removal"),
-          tags$li(tags$b("Unselect points:"), " box- or lasso-select them, then click “Remove from Accumulated”"),
-          tags$li(tags$b("Clear selection:"), " click “Clear Selection” to reset the current plot selection"),
-          tags$li(tags$b("Clear outliers:"), " click “Clear ±σ Outliers” to unflag all ±σ points"),
-          tags$li(tags$b("Full reset:"), " click “Reload original data” at the bottom to restore your dataset")
+          tags$li(tags$b("Upload")," your AmeriFlux CSV (≤ 100 MB; multi-year enabled)"),
+          tags$li(tags$b("X-axis:")," time (TIMESTAMP_START) by default"),
+          tags$li(tags$b("Y-axis:")," variable you’ll remove (e.g. FC_1_1_1)"),
+          tags$li(tags$b("Year filter")," (all years selected by default)"),
+          tags$li(tags$b("Theme")," Toggle dark/light theme via the switch at bottom right on the left side panel"),
         ),
 
-        tags$h4("4. Apply removals & download"),
-        tags$p("Click “Apply removals” to set the selected Y-values to NA (and clear them from the plot), then “Export cleaned data” to download your cleaned .csv and R-script")
+        tags$h4("2. Flag Data"),
+        tags$ul(
+          tags$li(
+            "Box- or lasso-select points → ",
+            tags$b("Select Data")
+          ),
+          tags$li(
+            "Or click ",
+            tags$b("Select ±σ outliers"),
+            " to auto-flag residuals"
+          )
+        ),
 
+        tags$h4("3. Review & Copy Code"),
+        tags$p(
+          "Switch between the ",
+          tags$b("Current"),
+          " and ",
+          tags$b("Accumulated"),
+          " code tabs, then click 📋 to copy the R snippet for y-variable removal"
+        ),
 
+        tags$h4("4. Undo & Reset"),
+        tags$ul(
+          tags$li(
+            tags$b("Unselect points:"),
+            " box- or lasso-select them, then click ",
+            tags$b("Remove from Accumulated")
+          ),
+          tags$li(
+            tags$b("Clear selection:"),
+            " click ",
+            tags$b("Clear Selection"),
+            " to reset the current plot selection"
+          ),
+          tags$li(
+            tags$b("Clear outliers:"),
+            " click ",
+            tags$b("Clear ±σ Outliers"),
+            " to unflag all ±σ points"
+          ),
+          tags$li(
+            tags$b("Full reset:"),
+            " click ",
+            tags$b("Reload original data"),
+            " at the bottom to restore your dataset"
+          )
+        ),
+
+        tags$h4("5. Apply Removals"),
+        tags$p(
+          "Click ",
+          tags$b("Apply removals"),
+          " to set the selected Y-values to NA and remove these points from view"
+        ),
+
+        tags$h4("6. Export cleaned data"),
+        tags$p(
+          "If you’ve used ",
+          tags$b("Apply removals"),
+          ", download your cleaned .csv and R-script via ",
+          tags$b("Export cleaned data"),
+          " on the bottom left"
+        ),
+
+        tags$hr(),
+        tags$p(
+          "For full instructions, check out the ",
+          tags$a(href="https://github.com/kesondrakey/fluxtools/tree/main/inst/doc/introduction.html", "vignette")
+        )
         ),
       easyClose = TRUE,
       footer = modalButton("Got it!")
