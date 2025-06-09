@@ -654,7 +654,7 @@ server <- function(input, output, session) {
         tags$hr(),
         tags$p(
           "For full instructions, check out the ",
-          tags$a(href="https://github.com/kesondrakey/fluxtools/tree/main/inst/doc/introduction.html", "vignette")
+          tags$a(href="file:///E:/Github/fluxtools/inst/doc/introduction.html", "vignette")
         )
         ),
       easyClose = TRUE,
