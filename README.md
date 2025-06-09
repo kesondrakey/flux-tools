@@ -1,4 +1,4 @@
-# fluxtools
+# fluxtools v0.2.0
 
 Interactive Shiny application for QA/QC of AmeriFlux‐style flux‐tower data.  
 Designed to streamline the post‐processing of eddy covariance datasets (e.g., after EddyPro, physical boundary filtering) to detect and remove outliers, and generate reproducible R code for QA/QC AmeriFlux submission.
@@ -12,14 +12,15 @@ Key, K. (2025). fluxtools (version 0.1.0) [Computer software]. Zenodo. https://d
 
 - [Key Features](#key-features)  
 - [Installation](#installation)  
-- [Usage](#usage)  
+- [Quickstart](#quickstart)  
 - [Data Requirements](#data-requirements)  
 - [How It Works](#how-it-works)  
   - [Timestamp Parsing & Time Zones](#timestamp-parsing--time-zones)  
   - [Interactive QC & Selection](#interactive-qc--selection)  
   - [Outlier Detection](#outlier-detection)  
-  - [Code Generation](#code-generation)  
+  - [Code Generation & Copy-All](#code-generation--copy-all)  
 - [Download & Reset](#download--reset)  
+- [Vignette & Docs](#vignette--docs)  
 - [Citation](#citation)  
 - [License](#license)  
 
@@ -28,47 +29,38 @@ Key, K. (2025). fluxtools (version 0.1.0) [Computer software]. Zenodo. https://d
 ## Key Features
 
 - **Interactive Scatter Plot**  
-  Drag a lasso or box over points of any numeric variable (Y‐axis) against time or another variable (X‐axis) to inspect and flag questionable measurements.
+  Choose any numeric variable for X (often `TIMESTAMP_START`) and Y; drag a box or lasso to flag points
 
-- **±σ Outlier Highlighting (optional)**  
-  Choose a threshold (in standard deviations) to automatically highlight points beyond ±σ from a linear‐model fit. Quickly “Add all ±σ outliers” to your accumulated removal list.
+- **Multi-Year Support**  
+  Upload up to 100 MB of flux‐tower CSV (all years by default, or pick a subset)
 
-- **Accumulate or Remove Selections**  
-  ‣ Add/accumulate current lasso selections across variables → generate R code snippets to “case_when” these raw timestamps to `NA_real_`.  
-  ‣ Remove from the accumulated list (undo previous marks).  
-  ‣ Reset just the current selection or reset all filters to start over.
+- **Dark/Light Mode**  
+  Toggle UI theme on the fly (switch is in the top-right of the app)
+
+- **±σ Outlier Highlighting**  
+  Use the slider to mark points beyond N standard deviations from a linear fit; click **Select ±σ outliers** to add them
+
+- **Accumulate & Undo**  
+  - **Select data** current selection to an accumulated list across variables
+  - **Clear Selection** individual points or clear outliers and selections
 
 - **Confirm Removal**  
-  Clicking **Confirm Remove** sets the chosen Y‐variable to `NA` for all flagged rows and records their original timestamp strings. These removals appear in the “Removed data points” code box.
+  Hit **Apply removals** to convert flagged Y-values to `NA` in your data frame and immediately refresh the plot.
 
-- **Generated R Code**  
-  For reproducibility, every selection (current or accumulated) is translated into a self‐contained R snippet.
-  This code removes the y-axis variable based on TIMESTAMP_START, and turns them in NA. This code can be copied and 
-  pasted directly into the users R script for QA/QC purposes. The accuumulated code will generate multiple variables
-  using the "add current selection" button
-  
-  Example:
-  
+- **Export Cleaned Data**  
+  Download a CSV with removed points set to `NA` plus an R-script of all your removal code in one go.
+
+---
+
+## Installation
+
 ```r
-df2 <- df2 %>%
-  mutate(
-    FC_1_1_1 = case_when(
-      TIMESTAMP_START == '202401062100' ~ NA_real_,
-      TIMESTAMP_START == '202401090000' ~ NA_real_,
-      TIMESTAMP_START == '202401090030' ~ NA_real_,
-      TIMESTAMP_START == '202401100200' ~ NA_real_,
-      TIMESTAMP_START == '202401230700' ~ NA_real_,
-      TIMESTAMP_START == '202401261830' ~ NA_real_,
-      TRUE ~ FC_1_1_1
-    )
-  )
+# CRAN (coming soon)
+install.packages("fluxtools")
 
-```
-
-- **Example usage**
-source("R/run_app.R")
-run_flux_qaqc(offset = -10) #User must select UTC offset for local tower time
-
+# Development version from GitHub
+remotes::install_github("kesondrakey/fluxtools@v0.2.0")
+  
 
 
 Please cite the use of this product. 
