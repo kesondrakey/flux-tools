@@ -18,7 +18,7 @@ vignette: >
 3. Highlight statistical outliers (±σ from a linear fit) and add them to your point-removal R code
 4. Manually select and remove data points via a lasso or box. Selecting these adds to the accumulated removal code
 6. Copy and paste the generated code into your own R script for reproducible QA/QC
-7. Optionally, download a “cleaned” CSV with excluded values (using "apply removals") set to `NA` and an R script for the code to remove those values
+7. Download a “cleaned” CSV with excluded values (using "apply removals") set to `NA` and an R script for the code to remove those values
 
 This vignette shows you how to install, launch, and use the main Shiny app—`run_flux_qaqc()`—and walks through a typical workflow.
 
@@ -69,9 +69,13 @@ run_flux_qaqc(-5)
      )
    ```
    
-   5. **Accumulate code**: With points still selected, click “Select Data.” Selected points turn orange, and code is appended to the “Accumulated” box, allowing multiple selections per session. 
+5. **Flag data and Accumulate code**: With points still selected, click “Flag data.” Selected points turn orange, and code is appended to the “Accumulated” box, allowing multiple selections per session.
 
-6. **Switch variables**: Change y to any other variable (e.g., `SWC_1_1_1`) and select more points. Click “Select Data” Code for both variables to appear:
+6. **Unflag data**: Use the box or lasso to de-select points and remove from the Accumulated code box.
+   
+7. **Clear Selection**: To reset all selections from the current y-variable, click "Clear Selection" to reset the current view.
+ 
+8. **Switch variables**: Change y to any other variable (e.g., `SWC_1_1_1`) and select more points. Click “Flag data” Code for both variables to appear:
 
  ```r
    df <- df %>%
@@ -95,17 +99,17 @@ run_flux_qaqc(-5)
      )
    ```
    
-   7. **Compare variables**: Change to variables you would like to compare (e.g., change y to `TA_1_1_1` and x to `T_SONIC_1_1_1`). The app computes an R² via simple linear regression. The top R² is based on points before removals, and once data is selected, a second R² will pop up - calculating the linear regression assuming the selected points have been removed
+9. **Compare variables**: Change to variables you would like to compare (e.g., change y to `TA_1_1_1` and x to `T_SONIC_1_1_1`). The app computes an R² via simple linear regression. The top R² is based on points before removals, and once data is selected, a second R² will pop up - calculating the linear regression assuming the selected points have been removed
 
-8. **Highlight outliers**: Use the slider to select ±σ residuals. Click “Select all ±σ outliers” to append them to the Accumulated code. Click “Clear ±σ outliers” to deselect and remove from the code box
+10. **Highlight outliers**: Use the slider to select ±σ residuals. Click “Select all ±σ outliers” to append them to the Accumulated code. Click “Clear ±σ outliers” to deselect and remove from the code box
 
-9. **Copy all**: Click the Copy Icon to the right of the current or accumulated code box and paste into your own R script for documentation
+11. **Copy all**: Click the Copy Icon to the right of the current or accumulated code box and paste into your own R script for documentation
 
-10. **Apply Removals**: Click “Apply Removals” for each selected data points to replace selected points with `NA` in a new .csv (raw data is unaffected) and remove these values from view
+12. **Apply Removals**: Click “Apply Removals” to remove each selected data points, from the current y-variable, to replace points with `NA` in a new .csv (raw data is unaffected), available using 'export cleaned data' and remove these values from view
 
-11. **Reload original data**: Make a mistake or want a fresh start? Click Reload original data to reload the .csv from above to start over
+13. **Reload original data**: Make a mistake or want a fresh start? Click Reload original data to reload the .csv from above to start over
 
-12. **Export cleaned data**: Download the cleaned .csv reflecting your confirmed removals. This button will download a zip file containing your .csv, reflecting changes from using the "apply removals" button, and includes a compiled R script with the R code for those removals.
+14. **Export cleaned data**: Download the cleaned .csv reflecting your confirmed removals. This button will download a zip file containing your .csv, reflecting changes from using the "apply removals" button, and includes a compiled R script with the R code for those removals.
 
 This workflow illustrates how **fluxtools** streamlines interactive QA/QC of flux-tower data.
 

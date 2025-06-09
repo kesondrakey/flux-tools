@@ -9,7 +9,6 @@ options(shiny.maxRequestSize = 100 * 1024^2)
 
 ## ── 1) Theme ───────────────────────────────────────────────────────
 light_theme <- bs_theme(
-  version = 5,
   bootswatch = "cerulean")
 
 
@@ -150,7 +149,7 @@ ui <- fluidPage(
       #correct ()
       # Manual selection row
       fluidRow(
-        column(6,actionButton("add_sel", "Select Data",
+        column(6,actionButton("add_sel", "Flag Data",
                               width="100%",
                               icon = icon("check"),
                               'data-bs-toggle'="tooltip",
@@ -161,14 +160,14 @@ ui <- fluidPage(
                             width = "100%",
                             icon = icon("broom"),
                             'data-bs-toggle'="tooltip",
-                            title="Clear the current selection from the accumulated removal code")
+                            title="Clear all flagged points from the current y-variable from the accumulated removal code")
         )
       ),
 
       # Accumulated‐selection row
       fluidRow(
         column(6,
-               actionButton("remove_acc","Remove from Accumulated",
+               actionButton("remove_acc","Unflag Data",
                             width = "100%",
                             icon = icon("ban"),
                             'data-bs-toggle'="tooltip",
@@ -179,7 +178,7 @@ ui <- fluidPage(
                             width = "100%",
                             icon = icon("trash"),
                             'data-bs-toggle'="tooltip",
-                            title="Turn the currently selected Y‐values into NA's and remove from view")
+                            title="Turn the currently selected Y‐values into NA's and remove from view. These will be reflected in the exported .csv using the 'export cleaned data' button")
         )
       ),
 
@@ -590,7 +589,7 @@ server <- function(input, output, session) {
         tags$ul(
           tags$li(
             "Box- or lasso-select points → ",
-            tags$b("Select Data")
+            tags$b("Flag Data")
           ),
           tags$li(
             "Or click ",
@@ -613,7 +612,7 @@ server <- function(input, output, session) {
           tags$li(
             tags$b("Unselect points:"),
             " box- or lasso-select them, then click ",
-            tags$b("Remove from Accumulated")
+            tags$b("Unflag Data")
           ),
           tags$li(
             tags$b("Clear selection:"),
@@ -948,7 +947,7 @@ server <- function(input, output, session) {
     if (length(keys) == 0) {
       return("
 
-<!-- draw a box or lasso (or click “Select Data”) to see its code here -->
+<!-- draw a box or lasso (or click “Flag Data”) to see its code here -->
 
 ")
     }
@@ -974,7 +973,7 @@ server <- function(input, output, session) {
     if (length(all_removals) == 0) {
       return("
 
-<!-- click “Select Data” or “Add all ±σ outliers” → see code here -->
+<!-- click “Flag Data” or “Add all ±σ outliers” → see code here -->
 
 ")
     }
@@ -1081,7 +1080,7 @@ server <- function(input, output, session) {
   )
 
 
-  #remove from accumulated button logic
+  #Unflag Data button logic
   observeEvent(input$remove_acc, {
     keys <- selected_keys()
     if (length(keys) == 0) return()
