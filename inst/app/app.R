@@ -7,8 +7,6 @@ library(bslib)     # for theming
 # Allow larger uploads (here: up to 100 MB)
 options(shiny.maxRequestSize = 100 * 1024^2)
 
-# Expose inst/doc as /docs inside the Shiny app:
-addResourcePath("docs", system.file("doc", package = "fluxtools"))
 
 ## ── 1) Theme ───────────────────────────────────────────────────────
 light_theme <- bs_theme(
@@ -574,12 +572,16 @@ server <- function(input, output, session) {
     )
   })
 
-  # inside server()
   helpModal <- function() {
     shiny::modalDialog(
       title     = "Help: fluxtools QA/QC",
       tabsetPanel(
         id = "help_tabs",
+
+        # ─── Quick Start ─────────────────────────────────────────────────────────
+
+
+
         tabPanel(
           "Quick Start",
           tagList(
@@ -587,10 +589,11 @@ server <- function(input, output, session) {
                   tags$h4("1. Upload & Choose Variables"),
                   tags$ul(
                     tags$li(tags$b("Upload")," your AmeriFlux CSV (≤ 100 MB; multi-year enabled)"),
-                    tags$li(tags$b("X-axis:")," time (TIMESTAMP_START) by default"),
-                    tags$li(tags$b("Y-axis:")," variable you’ll remove (e.g. FC_1_1_1)"),
-                    tags$li(tags$b("Year filter")," (all years selected by default)"),
-                    tags$li(tags$b("Theme")," Toggle dark/light theme via the switch at bottom right on the left side panel")
+                    tags$li(tags$b("X-axis:"),"Defaults to TIMESTAMP_START (e.g., 'YYYYMMDDHHMM', such as '201507281700'); you can switch to any numeric variable"),
+                    tags$li(tags$b("Time Note:")," TIMESTAMP_START is parsed into POSIXct in your local TZ so you see familiar clock times (e.g. 14:00), but the generated code always uses the original 'YYYYMMDDHHMM' string to avoid ambiguity"),
+                    tags$li(tags$b("Y-axis:")," The variable you want to remove (i.e. FC_1_1_1)"),
+                    tags$li(tags$b("Year filter")," select one or more years to scope your QA/QC (defaults to all)"),
+                    tags$li(tags$b("Theme")," toggle light/dark mode via the switch at the bottom left")
                   ),
 
                 tags$h4("2. Flag Data"),
@@ -615,26 +618,36 @@ server <- function(input, output, session) {
                 tags$p("Click ",tags$b("Apply removals")," to set the selected Y-values to NA and remove these points from view"
                 ),
 
-                tags$h4("6. Export cleaned data"),
-                tags$p("If you’ve used ",tags$b("Apply removals"),", download your cleaned .csv and R-script via ",
-                       tags$b("Export cleaned data")," on the bottom left")
+                tags$h4("6. Export Image"),
+                tags$p("Because the scatter is powered by Plotly, you can click the camera icon (upper-right corner of the plot) to download a high-resolution PNG of any current view"
+                ),
+
+                tags$h4("7. Export cleaned data"),
+                tags$p("Click ", tags$b("Export cleaned data"), " in the bottom left to download a ZIP file containing:",
+                  tags$ul(
+                    tags$li("A cleaned CSV (all points you removed via ", tags$b("Apply removals"), " are set to NA)"),
+                    tags$li("An R script with the exact code used to apply those removals")))
             )
           )
-        ),
+            ),
+
+        # ─── Vignette ────────────────────────────────────────────────────────────
         tabPanel(
-          "Full Vignette",
-          tags$iframe(
-            src    = "docs/introduction.html",
-            width  = "100%",
-            height = "600px",
-            style  = "border:none;"
+          "Vignette",
+          tagList(
+            tags$pre(
+              "In your R console run:\n",
+              tags$b('library(fluxtools)\n'),
+              'vignette("introduction", package = "fluxtools")'
+            )
           )
         )
-      ),           # <-- closes tabsetPanel()
-      easyClose = TRUE,
-      size      = "l"
-    )             # <-- closes modalDialog()
-  }               # <-- closes helpModal()
+
+        ),
+        easyClose = TRUE,
+        size      = "l"
+    )
+  }
 
   observeEvent(input$help, {
     shiny::showModal(helpModal())
