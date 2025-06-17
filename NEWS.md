@@ -1,3 +1,5 @@
+# fluxtools 0.3.0
+
 # fluxtools 0.1.0 (2025-06-03)
 
 * First CRAN release:  
