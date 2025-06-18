@@ -57,7 +57,7 @@ Key, K. (2025). fluxtools (version 0.2.0) [Computer software]. Zenodo. https://d
 ## Installation
 
 ```r
-# CRAN (coming soon)
+# Install from CRAN 
 install.packages("fluxtools")
 
 # Install from GitHub

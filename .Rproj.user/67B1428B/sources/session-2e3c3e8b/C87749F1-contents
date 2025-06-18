@@ -29,7 +29,26 @@ library(fluxtools)
 
 
 # this should now point to your file
-system.file("CITATION", package = "fluxtools")  
+system.file("CITATION", package = "fluxtools")
 # and this should use your exact title
+citation("fluxtools")
+
+
+
+
+
+
+
+
+
+
+# If you need to unload:
+if ("fluxtools" %in% loadedNamespaces()) detach("package:fluxtools", unload=TRUE)
+
+# Rebuild & install your local package:
+devtools::install_local(path = "E:/GitHub/fluxtools", build_vignettes = TRUE, force = TRUE)
+
+# Now test:
+library(fluxtools)
 citation("fluxtools")
 

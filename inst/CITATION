@@ -1,9 +1,9 @@
 citHeader("To cite package 'fluxtools' in publications use:")
 
-citations <- list(
-  bibentry(
+bibentry(
+	key = "fluxtools",
     bibtype = "Manual",
-    title   = "Fluxtools: Interactive QA/QC for AmeriFlux Data",
+    title   = "fluxtools: Interactive QA/QC for AmeriFlux Data",
     author  = person(
       given  = "Kesondra",
       family = "Key",
@@ -13,7 +13,4 @@ citations <- list(
     year    = "2025",
     note    = "Fluxtools v0.2.0; doi:10.5281/zenodo.15597159",
     url     = "https://github.com/kesondrakey/fluxtools"
-  )
 )
-
-citFooter()

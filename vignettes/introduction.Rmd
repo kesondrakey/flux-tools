@@ -26,10 +26,10 @@ This vignette shows you how to install, launch, and use the main Shiny app—`ru
 
 # Installation
 
-You can install **fluxtools** from CRAN (once it’s been accepted), or directly from GitHub:
+You can install **fluxtools** from CRAN, or directly from GitHub:
 
 ```r
-# From CRAN (coming soon)
+# Install from CRAN 
 install.packages("fluxtools")
 
 # Install from GitHub

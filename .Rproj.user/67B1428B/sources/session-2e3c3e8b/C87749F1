@@ -1,27 +1,27 @@
 {
     "id": "C87749F1",
-    "path": null,
+    "path": "E:/Github/Ameriflux_Processing/package_notes/citation_troubleshooting.R",
     "project_path": null,
     "type": "r_source",
-    "hash": "0",
+    "hash": "2197056619",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1750203492274.0,
     "source_on_save": false,
-    "relative_order": 5,
+    "relative_order": 3,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "32,0",
-        "scrollLine": "23"
+        "cursorPosition": "26,18",
+        "scrollLine": "18"
     },
     "folds": "",
-    "lastKnownWriteTime": 866101023374516080,
-    "encoding": "",
+    "lastKnownWriteTime": 1750211459,
+    "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1750209973020,
+    "last_content_update": 1750211459918,
     "read_only": false,
     "read_only_alternatives": []
 }

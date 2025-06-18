@@ -18,23 +18,31 @@ devtools::install()     ## installs “fluxtools” into your library
 use_description(fields = list(
   Package     = "fluxtools", 
   Type        = "Package",
-  Title       = "Interactive QA/QC for AmeriFlux Data",
+  Title       = "Interactive QA/QC for Ameriflux Data",
   Version     = "0.2.0",
   'Authors@R'   = 'person("Kesondra", "Key", email = "keyke@iu.edu", role = c("aut", "cre"))',
   Description    = paste(
-    "A Shiny-based interactive QA/QC tool for flux tower data processing.",
-    "It generates data-point removal code with user-directed point removal",
-    "and can output a cleaned csv.", sep = " "
+    "Fluxtools provides a Shiny-based interactive QA/QC tool for",
+    "eddy-covariance flux-tower data processing.",
+    "It generates data-point removal code via user-directed selection from a",
+    "scatterplot, and can export a cleaned CSV with removed points set to NA",
+    "plus an R script for reproducibility.",
+    "Reference: Key (2025) <DOI: 10.5281/zenodo.15597159>.",
+    sep = " "
   ),
   License        = "GPL-3", #Since I use Shiny
-  URL            = "https://github.com/kesondrakey/fluxtools",
+  URL            = "https://github.com/kesondrakey/fluxtools, https://doi.org/10.5281/zenodo.15597159",
+  # URL            = c(
+  #   "https://github.com/kesondrakey/fluxtools",
+  #   "https://doi.org/10.5281/zenodo.15597159"
+  # ),
   BugReports     = "https://github.com/kesondrakey/fluxtools/issues",
   Encoding       = "UTF-8",
   LazyData       = "true",
   Imports        = "shiny, dplyr, plotly",
   Suggests       = "knitr, rmarkdown",
-  VignetteBuilder = "knitr",
-  BuildVignettes = "FALSE"
+  VignetteBuilder = "knitr"#,
+  #BuildVignettes = "FALSE"
 ))
 
 
@@ -168,17 +176,6 @@ tarball <- devtools::build(vignettes = FALSE)
 
 devtools::check_built(tarball)
 
-
-
-#Checking Citation issue:
-devtools::install_local("E:/GitHub/fluxtools",
-                        build_vignettes = TRUE,
-                        force = TRUE)
-
-
-# # in R
-# tarball <- devtools::build(".", quiet = TRUE)
-# cat(system2("tar", c("-tzf", tarball), stdout = TRUE), sep = "\n")
 
 
 

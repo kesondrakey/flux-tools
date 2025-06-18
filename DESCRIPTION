@@ -1,14 +1,18 @@
 Type: Package
 Package: fluxtools
-Title: Interactive QA/QC for AmeriFlux Data
+Title: Interactive QA/QC for Ameriflux Data
 Version: 0.2.0
 Authors@R: 
     person("Kesondra", "Key", , "keyke@iu.edu", role = c("aut", "cre"))
-Description: A Shiny-based interactive QA/QC tool for flux tower data
-    processing. It generates data-point removal code with user-directed
-    point removal and can output a cleaned csv.
+Description: Fluxtools provides a Shiny-based interactive QA/QC tool for
+    eddy-covariance flux-tower data processing. It generates data-point
+    removal code via user-directed selection from a scatterplot, and can
+    export a cleaned CSV with removed points set to NA plus an R script
+    for reproducibility. Reference: Key (2025) <DOI:
+    10.5281/zenodo.15597159>.
 License: GPL-3
-URL: https://github.com/kesondrakey/fluxtools
+URL: https://github.com/kesondrakey/fluxtools,
+    https://doi.org/10.5281/zenodo.15597159
 BugReports: https://github.com/kesondrakey/fluxtools/issues
 Imports: 
     dplyr,
@@ -19,7 +23,6 @@ Suggests:
     rmarkdown
 VignetteBuilder: 
     knitr
-BuildVignettes: FALSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
