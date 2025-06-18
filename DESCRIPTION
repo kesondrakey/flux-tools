@@ -1,6 +1,6 @@
 Type: Package
-Package: fluxtools
-Title: Fluxtools: Interactive QA/QC for AmeriFlux Data
+Package: Fluxtools
+Title: Interactive QA/QC for AmeriFlux Data
 Version: 0.2.0
 Authors@R: 
     person("Kesondra", "Key", , "keyke@iu.edu", role = c("aut", "cre"))
