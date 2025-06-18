@@ -16,6 +16,9 @@ devtools::install_local("E:/GitHub/fluxtools", build_vignettes = TRUE, force = T
 
 list.files(fluxtools::here(), pattern = "^CITATION$")
 # should return "CITATION"
+if ("fluxtools" %in% loadedNamespaces()) {
+  detach("package:fluxtools", unload = TRUE, character.only = TRUE)
+}
 remove.packages("fluxtools")
 # Direct clone + build:
 remotes::install_git("https://github.com/kesondrakey/fluxtools.git")
@@ -25,39 +28,8 @@ library(fluxtools)
 
 
 
-
 # this should now point to your file
 system.file("CITATION", package = "fluxtools")  
 # and this should use your exact title
 citation("fluxtools")
 
-
-
-if ("fluxtools" %in% loadedNamespaces()) {
-  detach("package:fluxtools", unload = TRUE, character.only = TRUE)
-}
-remove.packages("fluxtools")
-
-
-install.packages(tarball, repos = NULL, type = "source")
-
-
-
-# Should now find your CITATION script
-system.file("CITATION", package = "fluxtools")
-# -> e.g. "C:/…/R/win-library/4.5/fluxtools/CITATION"
-
-# And should use your exact hand-written entry:
-citation("fluxtools")
-
-
-
-# restart R so fluxtools isn’t loaded...
-if ("fluxtools" %in% loadedNamespaces()) detach("package:fluxtools", unload=TRUE)
-remove.packages("fluxtools")
-# build locally and install
-tarball <- devtools::build(".", build_vignettes=TRUE)
-install.packages(tarball, repos=NULL, type="source")
-
-# And should use your exact hand-written entry:
-citation("fluxtools")
