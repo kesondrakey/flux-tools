@@ -29,10 +29,11 @@ This vignette shows you how to install, launch, and use the main Shiny app—`ru
 You can install **fluxtools** from CRAN (once it’s been accepted), or directly from GitHub:
 
 ```r
-# Install from Github:
-<!-- library(devtools)  -->
-<!-- devtools::install_github("kesondrakey/fluxtools") -->
+# From CRAN
+install.packages("fluxtools")
 
+# Or the development version
+# remotes::install_github("kesondrakey/fluxtools")
 ```
 
 # Launching the Shiny App
@@ -43,7 +44,6 @@ library(fluxtools)
 
 # Add the UTC offset for your flux tower site (e.g., UTC-5 for EST)
 run_flux_qaqc(-5)
-
 ```
 
 
