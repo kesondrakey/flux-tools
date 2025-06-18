@@ -1,0 +1,4 @@
+library(usethis)
+usethis::use_directory("inst/app")
+
+usethis::use_gpl3_license(name = "Kesondra Key")

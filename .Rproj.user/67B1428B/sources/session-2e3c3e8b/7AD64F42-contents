@@ -1,0 +1,13 @@
+# =====================================================================
+# 1) ENSURE ALL REQUIRED DEPENDENCIES ARE UP TO DATE
+# =====================================================================
+
+install.packages("devtools")
+
+library(devtools) 
+devtools::install_github("kesondrakey/fluxtools")
+
+library(fluxtools) 
+fluxtools:: run_flux_qaqc(-5) #Include your site UTC offset here! (ex. -5 is UTC-5 for EST)
+
+vignette("introduction", package = "fluxtools")

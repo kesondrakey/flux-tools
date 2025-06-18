@@ -1,0 +1,189 @@
+#install.packages(c("usethis", "devtools", "roxygen2"))
+library(usethis)
+# install the helper package if you don’t already have it
+install.packages("usethis")
+library(usethis)
+#usethis::use_directory("inst/app")
+
+usethis::create_package("E:/Github/fluxtools")
+
+usethis::use_directory("inst/app")
+
+
+
+devtools::document()    ## auto‐generates NAMESPACE + updates man/*.Rd
+devtools::install()     ## installs “fluxtools” into your library
+
+# If DESCRIPTION does not yet exist, create one:
+use_description(fields = list(
+  Package     = "fluxtools", 
+  Type        = "Package",
+  Title       = "Fluxtools: Interactive QA/QC for AmeriFlux Data",
+  Version     = "0.2.0",
+  'Authors@R'   = 'person("Kesondra", "Key", email = "keyke@iu.edu", role = c("aut", "cre"))',
+  Description    = paste(
+    "A Shiny-based interactive QA/QC tool for flux tower data processing.",
+    "It generates data-point removal code with user-directed point removal",
+    "and can output a cleaned csv.", sep = " "
+  ),
+  License        = "GPL-3", #Since I use Shiny
+  URL            = "https://github.com/kesondrakey/fluxtools",
+  BugReports     = "https://github.com/kesondrakey/fluxtools/issues",
+  Encoding       = "UTF-8",
+  LazyData       = "true",
+  Imports        = "shiny, dplyr, plotly",
+  Suggests       = "knitr, rmarkdown",
+  VignetteBuilder = "knitr",
+  BuildVignettes = "FALSE"
+))
+
+
+
+# inst/CITATION
+pkg <- "fluxtools"
+meta <- utils::packageDescription(pkg)
+ver  <- meta$Version
+doi  <- "10.5281/zenodo.15597159"  # update only the DOI when you get a new one
+
+cit <- bibentry(
+  bibtype = "Manual",
+  title   = sprintf("%s: Interactive QA/QC for AmeriFlux Data", pkg),
+  author  = person(
+    given  = "Kesondra",
+    family = "Key",
+    email  = "keyke@iu.edu",
+    role   = c("aut","cre")
+  ),
+  year    = meta$Year %||% "2025",  # use DESCRIPTION$Year if you add it, else fall back
+  note    = sprintf("R package version %s; doi:%s", ver, doi),
+  url     = meta$URL
+)
+print(cit)
+
+# Build the lines exactly as you want them:
+# 1. Ensure inst/ exists
+if (!dir.exists("inst")) dir.create("inst")
+
+
+
+
+# 2. Build the lines exactly as above
+citation_lines <- c(
+  "# inst/CITATION",
+  "",
+  "pkg <- \"fluxtools\"",
+  "meta <- utils::packageDescription(pkg)",
+  "ver  <- meta$Version",
+  "doi  <- \"10.5281/zenodo.15597159\"",  # only update DOI when you mint a new one
+  "",
+  "cit <- bibentry(",
+  "  bibtype = \"Manual\",",
+  "  title   = sprintf(\"%s: Interactive QA/QC for AmeriFlux Data\", pkg),",
+  "  author  = person(",
+  "    given  = \"Kesondra\",",
+  "    family = \"Key\",",
+  "    email  = \"keyke@iu.edu\",",
+  "    role   = c(\"aut\",\"cre\")",
+  "  ),",
+  "  year    = meta$Year %||% \"2025\",",
+  "  note    = sprintf(\"R package version %s; doi:%s\", ver, doi),",
+  "  url     = meta$URL",
+  ")",
+  "print(cit)"
+)
+
+# 3. Write to inst/CITATION
+writeLines(citation_lines, con = "inst/CITATION")
+#if error, do this: usethis::use_citation()
+
+
+
+
+usethis::use_namespace()
+devtools::document()   # or roxygen2::roxygenise()
+
+library(fluxtools)
+run_flux_qaqc(-5)  # for example
+
+roxygen2::roxygenise() 
+
+#
+Sys.which("make")
+
+
+usethis::use_gpl_license(
+  version       = 3,    # GPL-3
+  include_future = TRUE # “or later” clause
+)
+
+devtools::document()
+
+
+
+#fix citation
+# # inst/CITATION
+# # If you haven’t already, make a backup folder for non‐R‐formatted citations:
+# if (!dir.exists("inst/old_citations")) dir.create("inst/old_citations")
+# 
+# # Move the CFF file out of the way:
+# if (file.exists("inst/CITATION.cff")) {
+#   file.rename("inst/CITATION.cff", "inst/old_citations/CITATION.cff")
+# }
+
+cit <- citation("fluxtools")
+print(cit)
+
+
+
+#HERE to set up the .tar/check package errors
+
+devtools::document()
+#tarball <- devtools::build()   # say yes (no need for --build-vignettes, because BuildVignettes = FALSE)
+
+#manual - automatic isnt working
+if (!dir.exists("inst/doc")) dir.create("inst/doc", recursive = TRUE)
+rmarkdown::render("vignettes/introduction.Rmd",
+                  output_format = "rmarkdown::html_vignette",
+                  output_file = "C:/Users/keyke/Documents/GitHub/fluxtools/inst/doc/introduction.html",
+                  quiet = TRUE)
+
+rmarkdown::render(
+  "vignettes/introduction.Rmd",
+  output_format = "html_vignette",
+  output_dir    = "inst/doc",
+  output_file   = "introduction.html",
+  quiet         = TRUE
+)
+
+
+# in R console, from your package root
+devtools::build_vignettes()
+
+
+
+# 1) In your R session, set wd to the package root:
+setwd("C:/Users/keyke/Documents/GitHub/fluxtools")
+# 2) Build a source tarball but keep prebuilt vignettes:
+tarball <- devtools::build(vignettes = FALSE)
+
+# From the same fresh R session (where your wd is the package root):
+#tarball <- devtools::build()   # say no (no need for --build-vignettes, because BuildVignettes = FALSE)
+
+
+devtools::check_built(tarball)
+
+
+
+#Checking Citation issue:
+cit <- citation("fluxtools")
+print(cit)
+
+
+devtools::document()
+devtools::install()       # or remotes::install_local()
+
+citation("fluxtools")
+length(citation("fluxtools"))   # should be 1
+print(citation("fluxtools")[[1]])
+
+
