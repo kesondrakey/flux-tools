@@ -175,15 +175,8 @@ devtools::check_built(tarball)
 
 
 #Checking Citation issue:
-cit <- citation("fluxtools")
-print(cit)
-
-
-devtools::document()
-devtools::install()       # or remotes::install_local()
-
-citation("fluxtools")
-length(citation("fluxtools"))   # should be 1
-print(citation("fluxtools")[[1]])
+devtools::install_local("E:/GitHub/fluxtools",
+                        build_vignettes = TRUE,
+                        force = TRUE)
 
 
