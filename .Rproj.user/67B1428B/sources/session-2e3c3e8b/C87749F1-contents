@@ -1,0 +1,14 @@
+library(devtools) 
+devtools::install_github("kesondrakey/fluxtools")
+library(fluxtools)
+
+library(devtools)  
+
+install.packages(
+  "https://github.com/kesondrakey/fluxtools/releases/download/v0.2.0/fluxtools_0.2.0.tar.gz",
+  repos = NULL,
+  type  = "source"
+)
+
+
+remotes::install_git("https://github.com/kesondrakey/fluxtools.git")
