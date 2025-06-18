@@ -5,7 +5,7 @@ citHeader("To cite package 'fluxtools' in publications use:")
 citations <- list(
   bibentry(
     bibtype = "Manual",
-    title   = "fluxtools: Interactive QA/QC for AmeriFlux Data",
+    title   = "Fluxtools: Interactive QA/QC for AmeriFlux Data",
     author  = person(
       given  = "Kesondra",
       family = "Key",

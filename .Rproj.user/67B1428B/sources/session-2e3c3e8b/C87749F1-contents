@@ -1,6 +1,14 @@
+# should return the path to the installed CITATION
+system.file("CITATION", package = "fluxtools")
 
-# Direct clone + build:
-remotes::install_git("https://github.com/kesondrakey/fluxtools.git")
+# now citation() will use your script
+citation("fluxtools")
 
 
-library(fluxtools)
+# from your package source dir
+devtools::install_local("E:/GitHub/fluxtools",
+                        build_vignettes = TRUE,
+                        force = TRUE)
+
+
+devtools::install_local("E:/GitHub/fluxtools", build_vignettes = TRUE, force = TRUE)
