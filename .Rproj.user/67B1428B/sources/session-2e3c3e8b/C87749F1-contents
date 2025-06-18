@@ -12,3 +12,22 @@ devtools::install_local("E:/GitHub/fluxtools",
 
 
 devtools::install_local("E:/GitHub/fluxtools", build_vignettes = TRUE, force = TRUE)
+
+
+list.files(fluxtools::here(), pattern = "^CITATION$")
+# should return "CITATION"
+remove.packages("fluxtools")
+# Direct clone + build:
+remotes::install_git("https://github.com/kesondrakey/fluxtools.git")
+
+
+library(fluxtools)
+
+
+
+
+# this should now point to your file
+system.file("CITATION", package = "fluxtools")  
+# and this should use your exact title
+citation("fluxtools")
+
