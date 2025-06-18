@@ -1,7 +1,21 @@
 # inst/CITATION
 
-citHeader("To cite the 'fluxtools' package in publications, please use:
+citHeader("To cite package 'fluxtools' in publications use:")
 
-  Key, K. (2025) ‘fluxtools: Interactive QA/QC for AmeriFlux Data’, 
-  R package version 0.1.1, <https://github.com/kesondrakey/fluxtools>.
-")
+citations <- list(
+  bibentry(
+    bibtype = "Manual",
+    title   = "fluxtools: Interactive QA/QC for AmeriFlux Data",
+    author  = person(
+      given  = "Kesondra",
+      family = "Key",
+      email  = "keyke@iu.edu",
+      role   = c("aut", "cre")
+    ),
+    year    = "2025",
+    note    = "R package version 0.2.0; doi:10.5281/zenodo.15597159",
+    url     = "https://github.com/kesondrakey/fluxtools"
+  )
+)
+
+citFooter()

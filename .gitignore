@@ -2,4 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
+<<<<<<< Updated upstream
+=======
+inst/doc
+/doc/
+>>>>>>> Stashed changes
 /Meta/

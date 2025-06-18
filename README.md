@@ -3,8 +3,10 @@
 Interactive Shiny application for QA/QC of AmeriFlux‐style flux‐tower data.  
 Designed to streamline the post‐processing of eddy covariance datasets (e.g., after EddyPro, physical boundary filtering) to detect and remove outliers, and generate reproducible R code for QA/QC AmeriFlux submission.
 
+If you use fluxtools in your workflow, please cite the use of this product. 
+
 If you use fluxtools in your workflow, please cite:
-Key, K. (2025). fluxtools (version 0.1.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15597160
+Key, K. (2025). fluxtools (version 0.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15597159
 
 ---
 
@@ -58,12 +60,13 @@ Key, K. (2025). fluxtools (version 0.1.0) [Computer software]. Zenodo. https://d
 # CRAN (coming soon)
 install.packages("fluxtools")
 
-# Development version from GitHub
-remotes::install_github("kesondrakey/fluxtools@v0.2.0")
-  
+# Install from GitHub
+library(devtools) 
+devtools::install_github("kesondrakey/fluxtools")
 
 
-Please cite the use of this product. 
+#Load fluxtools and launch the QA/QC application:
+library(fluxtools)
 
-If you use fluxtools in your workflow, please cite:
-Key, K. (2025). fluxtools (version 0.1.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15597160
+# Add the UTC offset for your flux tower site (e.g., UTC-5 for EST)
+run_flux_qaqc(-5)
