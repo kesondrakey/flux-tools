@@ -14,6 +14,7 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   packageStartupMessage(
     "fluxtools: Interactive QA/QC for AmeriFlux Data\n\n",
     "To run the app, replace with your site’s UTC offset (i.e., –5 for EST):\n",
@@ -26,6 +27,13 @@
   )
 }
 
+=======
+  version <- utils::packageVersion(pkgname)
+  packageStartupMessage("Welcome to fluxtools!")
+  packageStartupMessage("Version: ", version)
+  packageStartupMessage("To cite, run citation('fluxtools')")
+}
+>>>>>>> Stashed changes
 =======
   version <- utils::packageVersion(pkgname)
   packageStartupMessage("Welcome to fluxtools!")
