@@ -16,7 +16,7 @@ devtools::install()     ## installs “fluxtools” into your library
 
 # If DESCRIPTION does not yet exist, create one:
 use_description(fields = list(
-  Package     = "Fluxtools", 
+  Package     = "fluxtools", 
   Type        = "Package",
   Title       = "Interactive QA/QC for AmeriFlux Data",
   Version     = "0.2.0",
