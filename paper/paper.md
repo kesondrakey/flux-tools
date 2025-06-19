@@ -35,7 +35,7 @@ Eddy covariance data processing requires extensive quality control
 data before submission to public data repositories such as
 [Ameriflux](https://ameriflux.lbl.gov/) [@ameriflux].
 [*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is
-an R \[\>= 4.5.0; @R\] *Shiny* [@Shiny] application built with *Plotly*
+an R (≥ 4.5.0; @R) *Shiny* [@Shiny] application built with *Plotly*
 [@Plotly] and *dplyr* [@dplyr] packages designed to streamline this
 workflow by providing interactive visualization, year-based filtering,
 and on-the-fly R code generation for specified data removal. Users can
@@ -163,8 +163,8 @@ Dynamics of Socio-Environmental Systems Program (Award 22-06086) and
 NASA's Carbon Monitoring System (Award 80NSSC23K1254).
 
 Partial development of the fluxtools application logic, debugging
-assistance, and initial code drafting were supported by ChatGPT
-\[OpenAI's GPT-4-mini-high; [-@ChatGPT]. All final code and revisions
-were authored and approved by the human author.
+assistance, and initial code drafting were supported by OpenAI's
+*GPT-4-mini-high* large language model [@ChatGPT]. All final code and
+revisions were authored and approved by the human author.
 
 # References {#references .unnumbered}
