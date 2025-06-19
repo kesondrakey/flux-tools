@@ -1,3 +1,31 @@
+---
+title: "Fluxtools: interactive Shiny tool for QA/QC and code generation of Ameriflux eddy covariance data"
+tags:
+  - R
+  - eddy covariance
+  - flux towers
+  - ameriflux
+  - QA/QC
+date: 18 June 2025          # %e %B %Y
+authors:
+  - name: Kesondra Key
+    orcid: 0000-0001-6382-913X
+    affiliation: "1"
+affiliations:
+  - index: 1
+    name: "Paul H. O'Neill School of Public and Environmental Affairs, Indiana University, Bloomington, Indiana, United States"
+    ror: "02k40bc56"
+repository: https://github.com/kesondrakey/fluxtools
+archive:    https://doi.org/10.5281/zenodo.15597159
+license: GPL-3.0
+bibliography: paper.bib
+link-citations: true
+output:
+  md_document:
+    variant: markdown
+    preserve_yaml: true
+---
+
 # Summary
 
 Eddy covariance data processing requires extensive quality control

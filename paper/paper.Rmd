@@ -23,6 +23,7 @@ link-citations: true
 output:
   md_document:
     variant: markdown
+    preserve_yaml: true
 ---
 
 # Summary
