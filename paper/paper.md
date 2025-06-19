@@ -24,6 +24,8 @@ output:
   md_document:
     variant: markdown
     preserve_yaml: true
+    pandoc_args:
+      - --citeproc
 ---
 
 # Summary
@@ -33,7 +35,7 @@ Eddy covariance data processing requires extensive quality control
 data before submission to public data repositories such as
 [Ameriflux](https://ameriflux.lbl.gov/) [@ameriflux].
 [*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is
-an R \[≥ 4.5.0; @R\] *Shiny* [@Shiny] application built with *Plotly*
+an R \[\>= 4.5.0; @R\] *Shiny* [@Shiny] application built with *Plotly*
 [@Plotly] and *dplyr* [@dplyr] packages designed to streamline this
 workflow by providing interactive visualization, year-based filtering,
 and on-the-fly R code generation for specified data removal. Users can
@@ -81,9 +83,9 @@ width="30%"}
     documenting each data removal step
 
 ![Example of the *Fluxtools* interface and data
-selection](Fig2.png){#fig:2 width="100%"} ![Example of R² diagnostics
-using the ±σ outliers cutoffs and selection](Fig3.png){#fig:3
-width="100%"}
+selection`\label{fig:2}`{=tex}](Fig2.png){#fig:2 width="100%"} ![Example
+of R² diagnostics using the ±σ outliers cutoffs and
+selection`\label{fig:3}`{=tex}](Fig3.png){#fig:3 width="100%"}
 
 # Statement of need
 
