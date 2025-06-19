@@ -1,7 +1,7 @@
 Type: Package
 Package: fluxtools
 Title: Interactive QA/QC for Ameriflux Data
-Version: 0.2.0
+Version: 1.0.0
 Authors@R: 
     person("Kesondra", "Key", , "keyke@iu.edu", role = c("aut", "cre"))
 Description: An interactive Shiny-based tool for QA/QC of eddy covariance
