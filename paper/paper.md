@@ -62,6 +62,9 @@ width="30%"}
     by standard-deviation (σ) cutoffs. *See Fig 2* for interface and
     data selection example
 
+![Example of the *Fluxtools* interface and data
+selection`\label{fig:2}`{=tex}](Fig2.png){#fig:2 width="100%"}
+
 -   **On-the-fly R code generation**: The *Preview* pane shows selected
     timestamps and values; ready-to-copy R code using *dplyr's
     case_when(... \~ NA)* snippets generate in the *current* code box
@@ -77,15 +80,13 @@ width="30%"}
     bottom R² (orange) is when selected points are dropped from the
     linear regression model
 
+![Example of R² diagnostics using the ±σ outliers cutoffs and
+selection`\label{fig:3}`{=tex}](Fig3.png){#fig:3 width="100%"}
+
 -   **Export a cleaned .csv file and R script**: *Apply removals* in-app
     (converting data points into *NA*s for selected timestamps) and
     download both a cleaned .csv file and a comprehensive R script
     documenting each data removal step
-
-![Example of the *Fluxtools* interface and data
-selection`\label{fig:2}`{=tex}](Fig2.png){#fig:2 width="100%"} ![Example
-of R² diagnostics using the ±σ outliers cutoffs and
-selection`\label{fig:3}`{=tex}](Fig3.png){#fig:3 width="100%"}
 
 # Statement of need
 
@@ -131,7 +132,6 @@ analysis.
 
 ``` r
 library(fluxtools)
-
 #Set your site’s UTC offset (e.g., –5 for Eastern Standard Time)
 fluxtools::run_flux_qaqc(-5)
 ```
