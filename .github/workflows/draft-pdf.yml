@@ -28,10 +28,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: joss-paper
-          path: paper.pdf
+          path: paper/paper.pdf
 
       - name: Commit PDF back to repo
         uses: EndBug/add-and-commit@v9
         with:
           message: '(auto) add draft paper.pdf'
-          add: 'paper.pdf'
+          add: 'paper/paper.pdf'
