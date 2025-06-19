@@ -6,17 +6,24 @@ tags:
   - flux towers
   - ameriflux
   - QA/QC
+date: 18 June 2025          # %e %B %Y
 authors:
   - name: Kesondra Key
     orcid: 0000-0001-6382-913X
-    affiliation: Paul H. O'Neill School of Public and Environmental Affairs, Indiana University, Bloomington, Indiana, United States
-date: 2025-06-17
+    affiliation: 1
+affiliations:
+  - index: 1
+    name: "Paul H. O'Neill School of Public and Environmental Affairs, Indiana University, Bloomington, Indiana, United States"
+    ror: 02k40bc56 
+repository: https://github.com/kesondrakey/fluxtools
+archive:    https://doi.org/10.5281/zenodo.15597159
+license: GPL-3          # OSI-approved license 
 bibliography: paper.bib
 ---
 
-
 # Summary
-Eddy covariance data processing [@Burba2021] requires extensive quality control QA/QC to identify and remove implausible or erroneous half-hourly flux data before submission to public data repositories (i.e., [Ameriflux](https://ameriflux.lbl.gov/)) . [Fluxtools](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is an R (≥ 4.5.0) Shiny application (required packages: [*Shiny*](https://cran.r-project.org/web/packages/shiny/index.html) [@Shiny], [*Plotly*](https://cran.r-project.org/web/packages/plotly/index.html) [@Plotly], [*dplyr* ](https://cran.r-project.org/web/packages/dplyr/index.html) [@dplyr]) specifically designed to streamline this QA/QC process by providing interactive visualization, year-based filtering, and on-the-fly R code generation. This allows data managers the ability to visually pinpoint “bad” data (i.e., sensors went down, physically implausible data) and immediately extract reproducible removal snippets. With a few clicks, you can accumulate multiple removal steps, inspect before/after R2 values via base R’s  [*lm()* ](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm), and export both a cleaned .csv file and a full R script for data removal code. *Fluxtools* significantly accelerates the QA/QC workflow, ensuring transparent, reproducible, and shareable data cleaning suitable for final dataset preparation and repository submission (i.e., Ameriflux sites like [US-VT1](https://ameriflux.lbl.gov/sites/siteinfo/US-VT1) [@US-VT1] and [US-VT2](https://ameriflux.lbl.gov/sites/siteinfo/US-VT2) [@US-VT2]). 
+Eddy covariance data processing [@Burba2021] requires extensive quality control (QA/QC) to identify and remove implausible or erroneous half-hourly flux data before submission to public data repositories such as [Ameriflux](https://ameriflux.lbl.gov/) [@ameriflux].
+[**fluxtools**](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is an R (≥ 4.5.0) application that depends on [*Shiny*](https://cran.r-project.org/web/packages/shiny/index.html) [@Shiny], [*Plotly*](https://cran.r-project.org/web/packages/plotly/index.html) [@Plotly], and [*dplyr*](https://cran.r-project.org/web/packages/dplyr/index.html) [@dplyr]) packages, specifically designed to streamline this QA/QC process by providing interactive visualization, year-based filtering, and on-the-fly R code generation. This allows data managers the ability to visually pinpoint “bad” data (i.e., sensors went down, physically implausible data) and immediately extract reproducible removal snippets. With a few clicks, you can accumulate multiple removal steps, inspect before/after R2 values via base R’s  [*lm()* ](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm), and export both a cleaned .csv file and a full R script for data removal code. *Fluxtools* significantly accelerates the QA/QC workflow, ensuring transparent, reproducible, and shareable data cleaning suitable for final dataset preparation and repository submission (i.e., Ameriflux sites like [US-VT1](https://ameriflux.lbl.gov/sites/siteinfo/US-VT1) [@VT1] and [US-VT2](https://ameriflux.lbl.gov/sites/siteinfo/US-VT2) [@VT2]). 
 
 ![*Fluxtools* hex logo \label{fig:1}](Fig1.png){ width=30% .center }
 
@@ -44,15 +51,18 @@ High-frequency (10 Hz; data recorded 10 times per second) eddy covariance measur
 
 By combining interactivity with code-based reproducibility, *Fluxtools* significantly streamlines and clarifies the QA/QC workflow. It promotes transparent documentation of decisions, reduces manual effort, and accelerates the preparation of flux data for repository uploads such as Ameriflux (i.e., sites like [US-VT1](https://ameriflux.lbl.gov/sites/siteinfo/US-VT1) and [US-VT2](https://ameriflux.lbl.gov/sites/siteinfo/US-VT2)). Ultimately, Fluxtools lowers the barriers to robust and reproducible QA/QC workflows, enabling researchers to devote less time to manual anomaly detection and more time to scientific analysis. 
 
-## How to
+Fluxtools can be installed from [Github](https://github.com/kesondrakey/fluxtools).
+
+# Code Example
 ```{r How-to, eval=FALSE}
 library(fluxtools)
 
-fluxtools::run_flux_qaqc(-5) # To run the app, replace ‘-5’ with your site’s UTC offset (e.g., –5 is for EST) 
+#Set your site’s UTC offset (e.g., –5 for Eastern Standard Time)
+fluxtools::run_flux_qaqc(-5)
 ```
 
 # Acknowledgments 
-This application was developed in my role as Co-Principal Investigator for the AmeriFlux US-VT1 and US-VT2 sites to streamline our QA/QC pipeline. I thank Ameriflux for maintaining clear, up-to-date data‐formatting specifications (see [Ameriflux Data Variables](https://ameriflux.lbl.gov/wp-content/uploads/2015/10/AmeriFlux_DataVariables.pdf)) and I acknowlege the broader R and Shiny communities for their efforts in advancing interactive data‐visualization tools.  
+This application was developed in my role as Co-Principal Investigator for the AmeriFlux US-VT1 and US-VT2 sites to streamline our QA/QC pipeline. I thank Ameriflux for maintaining clear, up-to-date data‐formatting specifications (see [Ameriflux Data Variables](https://ameriflux.lbl.gov/data/aboutdata/data-variables/)) and I acknowlege the broader R and Shiny communities for their efforts in advancing interactive data‐visualization tools.  
 
 I am grateful to Dr. Kim Novick (Indiana University), Housen Chu (Ameriflux), and Benju Baniya (Texas A&M University) for their invaluable expertise in assisting with the Ameriflux data processing workflow. Without their support, this data pipeline would not have been possible. I also thank Dr. Mallory Barnes, Dr. Daniel Beverly, and Dr. Xian Wang (all at Indiana University) for their support during development and testing. Special thanks goes to George Burba (LI-COR Biosciences) for his encouragement and for insightful discussions that have helped shape the future of *Fluxtools*.
 
