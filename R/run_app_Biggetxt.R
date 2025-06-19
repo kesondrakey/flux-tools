@@ -878,22 +878,6 @@ server <- function(input, output, session) {
             showlegend = FALSE
           )%>%
 
-
-
-
-          # p <- p %>%
-          #   add_lines(
-          #     x          = xseq_all,
-          #     y          = preds_all,
-          #     inherit    = FALSE,
-          #     line       = list(
-          #       color = r2_bg_all,               # your chosen static color
-          #       width = 6                        # bump thickness up (default is ~2)
-          #     ),
-          #     #line       = list(color = "gray50", width = 4),  # ← add width here
-          #     #line       = list(color = "gray50"),
-          #     showlegend = FALSE
-          #   ) %>%
           add_annotations(
             xref        = "paper",
             yref        = "paper",
@@ -903,10 +887,10 @@ server <- function(input, output, session) {
             yanchor     = "bottom",
             text        = paste0("<b>R² (all points) = ", r2_all, "</b>"),
             showarrow   = FALSE,
-            font        = list(size = 18),
+            font        = list(size = 28),
             borderpad   = 6,
             borderwidth = 1.5,
-            yshift      = -18,    # ← move it down 10px
+            yshift      = -32,    # ← move it down 10px
             bgcolor     = r2_bg_all,
 
             bordercolor = list(color = if (isTRUE(input$dark_mode)) "#EEE" else "black")
@@ -941,10 +925,10 @@ server <- function(input, output, session) {
             yanchor     = "bottom",
             text        = paste0("<b>R² (sel dropped) = ", r2_sel, "</b>"),
             showarrow   = FALSE,
-            font        = list(size = 18),
+            font        = list(size = 28),
             borderpad   = 6,
             borderwidth = 1.5,
-            yshift      = -26,    # ← move it down 10px
+            yshift      = -54,    # ← move it down 10px
             bgcolor     = r2_bg_sel,
             bordercolor = list(color = if (isTRUE(input$dark_mode)) "#EEE" else "black")
           )
