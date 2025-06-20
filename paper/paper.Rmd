@@ -45,13 +45,12 @@ Eddy covariance data processing requires extensive quality control (QA/QC) to id
 ## Key features: 
 - **Interactive Plotly Scatterplots**: Plot any numeric or time variable; hover mouse over data points to see timestamps and values; export plots as .png directly from the app 
 
-- **Flexible point selection**: Select data points via box, lasso, or by standard-deviation (σ) cutoffs. *Fluxtools* provides auto generated removal code for selected points visible in the *Current* code box with ready-to-copy R code using *dplyr’s case_when(… ~ NA)* snippets generate in the *current* code box automatically. *See Fig 2* for interface and data selection example 
+- **Flexible point selection**: Box-select, lasso, or apply standard-deviation (σ) cutoffs to mark selected points. *Fluxtools* automatically generates removal ready-to-copy R snippets (*dplyr::case_when(… ~ NA)*) in the *Current* code pane. *See Fig 2* for interface and data selection example 
+
+- **On-the-fly R code generation**: After point selection, clicking *Flag Data* automatically highlights chosen points in yellow and appends the corresponding removal code into the *Accumulated* code panel for easy and continuous data selection
+
 
 ![Example of the *Fluxtools* interface and data selection\label{fig:2}](Fig2.png){#fig:2 width=100%}
-
-- **On-the-fly R code generation**: Flagged points, using the *Flag Data* button tool, automatically highlights selections in yellow and adds these values into the *Accumulated* code box for easy and continuous data selection. 
-
-<!-- The *Preview* pane shows selected timestamps and values; ready-to-copy R code using *dplyr’s case_when(… ~ NA)* snippets generate in the *current* code box automatically; *add current selection* adds code to the *accumulated* code box for easy and continuous data selection  -->
 
 - **Before/after R² diagnostics**: For any numeric variable comparison, *Fluxtools* fits a linear regression model and reports its R² value. 
 Selecting points re-computes R² as if those points were removed, allowing for easy comparison. *Fig 3* shows this process in *Fluxtools* using the *±σ outliers selection tool:* The top (red) R² uses all data, while the bottom R² (orange) omits selected points from the linear regression.

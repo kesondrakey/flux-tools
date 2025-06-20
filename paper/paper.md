@@ -65,18 +65,19 @@ width="30%"}
     variable; hover mouse over data points to see timestamps and values;
     export plots as .png directly from the app
 
--   **Flexible point selection**: Select data points via box, lasso, or
-    by standard-deviation (σ) cutoffs. *See Fig 2* for interface and
-    data selection example
+-   **Flexible point selection**: Box-select, lasso, or apply
+    standard-deviation (σ) cutoffs to mark selected points. *Fluxtools*
+    automatically generates removal ready-to-copy R snippets
+    (*dplyr::case_when(... \~ NA)*) in the *Current* code pane. *See Fig
+    2* for interface and data selection example
+
+-   **On-the-fly R code generation**: After point selection, clicking
+    *Flag Data* automatically highlights chosen points in yellow and
+    appends the corresponding removal code into the *Accumulated* code
+    panel for easy and continuous data selection
 
 ![Example of the *Fluxtools* interface and data
 selection`\label{fig:2}`{=tex}](Fig2.png){#fig:2 width="100%"}
-
--   **On-the-fly R code generation**: The *Preview* pane shows selected
-    timestamps and values; ready-to-copy R code using *dplyr's
-    case_when(... \~ NA)* snippets generate in the *current* code box
-    automatically; *add current selection* adds code to the
-    *accumulated* code box for easy and continuous data selection
 
 -   **Before/after R² diagnostics**: For any numeric variable
     comparison, *Fluxtools* fits a linear regression model and reports
@@ -89,10 +90,10 @@ selection`\label{fig:2}`{=tex}](Fig2.png){#fig:2 width="100%"}
 ![Example of R² diagnostics using the ±σ outliers cutoffs and
 selection`\label{fig:3}`{=tex}](Fig3.png){#fig:3 width="100%"}
 
--   **Export a cleaned .csv file and R script**: *Apply removals* in-app
-    (converting data points into *NA*s for selected timestamps) and
-    download both a cleaned .csv file and a comprehensive R script
-    documenting each data removal step
+-   **Export cleaned .csv file and R script**: *Apply removals* in-app
+    (converting data points into *NA*s for selected timestamps) then
+    *Export cleaned data* to download a cleaned .csv file and a
+    comprehensive R script documenting each data removal step
 
 # Statement of need
 
@@ -106,7 +107,7 @@ raw 10Hz data into half-hourly fluxes, while R packages like *REddyProc*
 [@Reddyproc], and Python tools like PyFluxPro [@PyFluxPro], automate
 u\*-threshold filtering, gap-filling, and flux partitioning. These tools
 excel at bulk data processing but offer no interactive means to inspect
-or carefully remove outliers that that require a human eye.
+or carefully remove outliers that require a human eye.
 
 In practice, data managers resort to custom scripts, extensive manual
 visualization, and fragmented documentation to detect and remove
@@ -116,12 +117,12 @@ errors, challenging to reproduce, and lack transparency. *Fluxtools*
 addresses this challenge by pairing an interactive scatterplot-based
 interface with on-the-fly R code generation. Users can visually flag
 implausible half-hourly data points, automatically generate the exact
-*case_when(... \~ NA) dplyr* code snippets (or apply removes
+*case_when(... \~ NA) dplyr* code snippets (or apply removals
 automatically in the app) and export a .zip file containing a cleaned
 .csv file plus a comprehensive R script documenting each data removal
 step that captures every user-made QA/QC decision.
 
-*Fluxtools* streamlines and clarifies the QA/QC workflow by combining
+*Fluxtools* streamlines and clarifies this QA/QC workflow by combining
 interactivity with code-based reproducibility. It promotes transparent
 documentation of decisions, reduces manual effort, and accelerates the
 preparation of flux data for repository uploads such as individual site
@@ -143,15 +144,15 @@ fluxtools::run_flux_qaqc(-5)
 
 # Acknowledgments
 
-Fluxtools was an independent project developed in my role as
-Co-Principal Investigator for the AmeriFlux
+Fluxtools is an independent project developed in my role as Co-Principal
+Investigator for the AmeriFlux
 [US-VT1](https://ameriflux.lbl.gov/sites/siteinfo/US-VT1) [@VT1] and
 [US-VT2](https://ameriflux.lbl.gov/sites/siteinfo/US-VT2) [@VT2] sites
 to streamline our QA/QC pipeline. I thank AmeriFlux for maintaining
 clear, up-to-date data‐formatting specifications (see [AmeriFlux Data
 Variables](https://ameriflux.lbl.gov/wp-content/uploads/2015/10/AmeriFlux_DataVariables.pdf))
-and I acknowledge the broader R and Shiny communities for their efforts
-in advancing interactive data‐visualization tools.
+and I acknowledge the broader *R* and *Shiny* communities for their
+efforts in advancing interactive data‐visualization tools.
 
 I am grateful to Dr. Kim Novick (Indiana University), Housen Chu
 (AmeriFlux), and Benju Baniya (Texas A&M University) for their
