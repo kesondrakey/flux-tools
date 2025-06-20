@@ -78,14 +78,13 @@ selection`\label{fig:2}`{=tex}](Fig2.png){#fig:2 width="100%"}
     automatically; *add current selection* adds code to the
     *accumulated* code box for easy and continuous data selection
 
--   **Before/after R² diagnostics**: When numeric variables are selected
-    for comparison, *Fluxtools* fits a linear regression model and
-    reports its R² value. When points are selected, the R² value is
-    re-computed assuming selected values are dropped to allow for before
-    and after comparison. *Fig 3* shows this process in *Fluxtools*
-    using the *±σ outliers selection tool:* The top (red) R² uses all
-    data, while the bottom R² (orange) omits selected points from the
-    linear regression.
+-   **Before/after R² diagnostics**: For any numeric variable
+    comparison, *Fluxtools* fits a linear regression model and reports
+    its R² value. Selecting points re-computes R² as if those points
+    were removed, allowing for easy comparison. *Fig 3* shows this
+    process in *Fluxtools* using the *±σ outliers selection tool:* The
+    top (red) R² uses all data, while the bottom R² (orange) omits
+    selected points from the linear regression.
 
 ![Example of R² diagnostics using the ±σ outliers cutoffs and
 selection`\label{fig:3}`{=tex}](Fig3.png){#fig:3 width="100%"}
