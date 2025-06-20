@@ -139,12 +139,13 @@ analysis.
 ## Installation
 
 ``` r
-# Install from CRAN 
-install.packages("fluxtools")
+# Option 1.) Install from CRAN (Fluxtools R Package submission pending)
+#install.packages("fluxtools")
 
-# Install from GitHub
-library(devtools) 
-devtools::install_github("kesondrakey/fluxtools")
+# Option 2.) Install most recent version from GitHub
+# Requires remotes ≥ 2.4.0
+library(remotes)
+remotes::install_git("https://github.com/kesondrakey/fluxtools.git")
 ```
 
 ## Call the Fluxtools App
