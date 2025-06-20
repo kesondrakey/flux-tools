@@ -1,5 +1,5 @@
 ---
-title: "Fluxtools: interactive Shiny tool for QA/QC and code generation of Ameriflux eddy covariance data"
+title: "Fluxtools: interactive Shiny tool for QA/QC and code generation of AmeriFlux eddy covariance data"
 tags:
   - R
   - eddy covariance
@@ -35,9 +35,9 @@ output:
 Eddy covariance data processing requires extensive quality control
 (QA/QC) to identify and remove implausible or erroneous half-hourly flux
 data before submission to public data repositories such as
-[Ameriflux](https://ameriflux.lbl.gov/) [@ameriflux].
+[AmeriFlux](https://ameriflux.lbl.gov/) [@ameriflux].
 [*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is
-an R \[≥ 4.5.0; @R\] *Shiny* [@Shiny] application built with *Plotly*
+an R ({≥} 4.5.0; @R) *Shiny* [@Shiny] application built with *Plotly*
 [@Plotly] and *dplyr* [@dplyr] packages designed to streamline this
 workflow by providing interactive visualization, year-based filtering,
 and on-the-fly R code generation for specified data removal. Users can
@@ -122,7 +122,7 @@ step that captures every user-made QA/QC decision.
 interactivity with code-based reproducibility. It promotes transparent
 documentation of decisions, reduces manual effort, and accelerates the
 preparation of flux data for repository uploads such as individual site
-submissions to Ameriflux. Ultimately, *Fluxtools* lowers the barriers to
+submissions to AmeriFlux. Ultimately, *Fluxtools* lowers the barriers to
 robust and reproducible QA/QC workflows, enabling researchers to devote
 less time to manual anomaly detection and more time to scientific
 analysis.
@@ -143,16 +143,16 @@ fluxtools::run_flux_qaqc(-5)
 Fluxtools was developed in my role as Co-Principal Investigator for the
 AmeriFlux [US-VT1](https://ameriflux.lbl.gov/sites/siteinfo/US-VT1)
 [@VT1] and [US-VT2](https://ameriflux.lbl.gov/sites/siteinfo/US-VT2)
-[@VT2] sites to streamline our QA/QC pipeline. I thank Ameriflux for
+[@VT2] sites to streamline our QA/QC pipeline. I thank AmeriFlux for
 maintaining clear, up-to-date data‐formatting specifications (see
-[Ameriflux Data
+[AmeriFlux Data
 Variables](https://ameriflux.lbl.gov/wp-content/uploads/2015/10/AmeriFlux_DataVariables.pdf))
 and I acknowlege the broader R and Shiny communities for their efforts
 in advancing interactive data‐visualization tools.
 
 I am grateful to Dr. Kim Novick (Indiana University), Housen Chu
-(Ameriflux), and Benju Baniya (Texas A&M University) for their
-invaluable expertise in assisting with the Ameriflux data processing
+(AmeriFlux), and Benju Baniya (Texas A&M University) for their
+invaluable expertise in assisting with the AmeriFlux data processing
 workflow. Without their support, this data pipeline would not have been
 possible. I also thank Dr. Mallory Barnes, Dr. Daniel Beverly, and
 Dr. Xian Wang (all at Indiana University) for their support during
