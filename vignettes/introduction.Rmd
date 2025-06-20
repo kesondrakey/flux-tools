@@ -1,10 +1,10 @@
 ---
-title: "Introduction to fluxtools"
+title: "Introduction to Fluxtools"
 author: "Kesondra Key"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to fluxtools}
+  %\VignetteIndexEntry{Introduction to Fluxtools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
