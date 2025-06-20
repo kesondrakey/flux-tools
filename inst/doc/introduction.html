@@ -344,6 +344,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(fluxtools)</span></code></pre></div>
+<pre><code>## Welcome to fluxtools!</code></pre>
+<pre><code>## Version: 0.3.0</code></pre>
+<pre><code>## To cite, run citation(&#39;fluxtools&#39;)</code></pre>
+<pre><code>## To see the vignette, run vignette(&#39;introduction&#39;, package = &#39;fluxtools&#39;)</code></pre>
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p><strong>fluxtools</strong> is an R package that provides an
@@ -371,20 +376,20 @@ workflow.</p>
 <h1>Installation</h1>
 <p>You can install <strong>fluxtools</strong> from CRAN, or directly
 from GitHub:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install from CRAN </span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;fluxtools&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Install from GitHub</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(devtools) </span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;kesondrakey/fluxtools&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Install from CRAN </span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;fluxtools&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># Install from GitHub</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="fu">library</span>(devtools) </span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;kesondrakey/fluxtools&quot;</span>)</span></code></pre></div>
 </div>
 <div id="launching-the-shiny-app" class="section level1">
 <h1>Launching the Shiny App</h1>
 <p>Load <strong>fluxtools</strong> and launch the QA/QC application:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(fluxtools)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># Add the UTC offset for your flux tower site (e.g., UTC-5 for EST)</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">run_flux_qaqc</span>(<span class="sc">-</span><span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(fluxtools)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># Add the UTC offset for your flux tower site (e.g., UTC-5 for EST)</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">run_flux_qaqc</span>(<span class="sc">-</span><span class="dv">5</span>)</span></code></pre></div>
 <p>Example workflow</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Upload</strong>: Select your AmeriFlux-style CSV (e.g.,
@@ -398,15 +403,15 @@ interest (e.g., <code>FC_1_1_1</code>). The generated R code focuses on
 removing the y-axis variable</p></li>
 <li><p><strong>Select data</strong>: Use the box or lasso to select
 points. This populates the “Current” code box with something like:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">FC_1_1_1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>      TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401261830&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>      TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401270530&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>      …</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> FC_1_1_1</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    )</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  )</span></code></pre></div></li>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="at">FC_1_1_1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>      TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401261830&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>      TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401270530&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>      …</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> FC_1_1_1</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    )</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  )</span></code></pre></div></li>
 <li><p><strong>Flag data and Accumulate code</strong>: With points still
 selected, click “Flag data.” Selected points turn orange, and code is
 appended to the “Accumulated” box, allowing multiple selections per
@@ -420,25 +425,25 @@ view.</p></li>
 (e.g., <code>SWC_1_1_1</code>) and select more points. Click “Flag data”
 Code for both variables to appear:</p></li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>      <span class="at">FC_1_1_1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401261830&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401270530&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>        …</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> FC_1_1_1</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>      )</span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    )</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>      <span class="at">SWC_1_1_1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202403261130&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202403270800&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>        …</span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> SWC_1_1_1</span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>      )</span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    )</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>      <span class="at">FC_1_1_1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401261830&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202401270530&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>        …</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> FC_1_1_1</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>      )</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    )</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>      <span class="at">SWC_1_1_1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202403261130&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>        TIMESTAMP_START <span class="sc">==</span> <span class="st">&#39;202403270800&#39;</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>        …</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> SWC_1_1_1</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>      )</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>    )</span></code></pre></div>
 <ol start="9" style="list-style-type: decimal">
 <li><p><strong>Compare variables</strong>: Change to variables you would
 like to compare (e.g., change y to <code>TA_1_1_1</code> and x to
