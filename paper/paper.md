@@ -1,11 +1,16 @@
 ---
-title: "Fluxtools: An Interactive Shiny App for Reproducible QA/QC of Eddy Covariance Data for AmeriFlux Submission"
+title: "Fluxtools: Reproducible QA/QC for Eddy Covariance Data Aligned with AmeriFlux Submission Standards"
 tags:
   - R
-  - eddy covariance
-  - flux towers
+  - eddy-covariance
+  - post-processing
+  - flux
+  - flux-tower
   - ameriflux
   - QA/QC
+  - Shiny
+  - Plotly
+  - dplyr
 date: 18 June 2025          # %e %B %Y
 authors:
   - name: Kesondra Key
