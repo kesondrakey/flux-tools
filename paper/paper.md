@@ -15,8 +15,10 @@ affiliations:
   - index: 1
     name: "Paul H. O'Neill School of Public and Environmental Affairs, Indiana University, Bloomington, Indiana, United States"
     ror: "02k40bc56"
+
 repository: https://github.com/kesondrakey/fluxtools
 archive:    https://doi.org/10.5281/zenodo.15597159
+
 license: GPL-3.0
 bibliography: paper.bib
 link-citations: true
@@ -35,7 +37,7 @@ Eddy covariance data processing requires extensive quality control
 data before submission to public data repositories such as
 [Ameriflux](https://ameriflux.lbl.gov/) [@ameriflux].
 [*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is
-an R (≥ 4.5.0; @R) *Shiny* [@Shiny] application built with *Plotly*
+an R \[≥ 4.5.0; @R\] *Shiny* [@Shiny] application built with *Plotly*
 [@Plotly] and *dplyr* [@dplyr] packages designed to streamline this
 workflow by providing interactive visualization, year-based filtering,
 and on-the-fly R code generation for specified data removal. Users can
