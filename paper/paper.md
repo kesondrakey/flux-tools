@@ -143,7 +143,6 @@ analysis.
 #install.packages("fluxtools")
 
 # Option 2.) Install most recent version from GitHub
-# Requires remotes ≥ 2.4.0
 library(remotes)
 remotes::install_git("https://github.com/kesondrakey/fluxtools.git")
 ```
