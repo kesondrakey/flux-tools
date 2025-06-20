@@ -136,6 +136,19 @@ analysis.
 *Fluxtools can be installed from
 [Github](https://github.com/kesondrakey/fluxtools).*
 
+## Installation
+
+``` r
+# Install from CRAN 
+install.packages("fluxtools")
+
+# Install from GitHub
+library(devtools) 
+devtools::install_github("kesondrakey/fluxtools")
+```
+
+## Call the Fluxtools App
+
 ``` r
 library(fluxtools)
 #Set your site’s UTC offset (e.g., –5 for Eastern Standard Time)

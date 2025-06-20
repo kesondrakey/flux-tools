@@ -71,6 +71,18 @@ In practice, data managers resort to custom scripts, extensive manual visualizat
 # Code Example
 *Fluxtools can be installed from [Github](https://github.com/kesondrakey/fluxtools).*
 
+## Installation
+```{r Installation, eval=FALSE}
+# Install from CRAN 
+install.packages("fluxtools")
+
+# Install from GitHub
+library(devtools) 
+devtools::install_github("kesondrakey/fluxtools")
+
+```
+
+## Call the Fluxtools App
 ```{r How-to, eval=FALSE}
 library(fluxtools)
 #Set your site’s UTC offset (e.g., –5 for Eastern Standard Time)
