@@ -1,5 +1,5 @@
 ---
-title: "Fluxtools: interactive Shiny tool for QA/QC and code generation of AmeriFlux eddy covariance data"
+title: "Fluxtools: An Interactive Shiny App for Reproducible QA/QC of Eddy Covariance Data for AmeriFlux Submission"
 tags:
   - R
   - eddy covariance
@@ -31,7 +31,7 @@ output:
 ---
 # Summary
 Eddy covariance data processing requires extensive quality control (QA/QC) to identify and remove implausible or erroneous half-hourly flux data before submission to public data repositories such as [AmeriFlux](https://ameriflux.lbl.gov/) [@ameriflux]. 
-[*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is an R [\(\ge\) 4.5.0; @R] *Shiny* [@Shiny] application built with *Plotly* [@Plotly] and *dplyr* [@dplyr] packages designed to streamline this workflow by providing interactive visualization, year-based filtering, and on-the-fly R code generation for specified data removal. Users can visually flag anomalous data points (i.e., periods of sensor failure, physically implausible data), accumulate multiple cleaning steps, inspect R² values before and after data cleaning via base R’s  [*lm()* ](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm) function, and export a zipped folder containing a cleaned .csv file and a full R script that records every decision. *Fluxtools* significantly accelerates the QA/QC workflow, ensuring transparent, reproducible, and shareable data cleaning suitable for final dataset preparation and repository submission. 
+[*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is an R (\(\ge\) 4.5.0; -@R) *Shiny* [@Shiny] application built with *Plotly* [@Plotly] and *dplyr* [@dplyr] packages designed to streamline this workflow by providing interactive visualization, year-based filtering, and on-the-fly R code generation for specified data removal. Users can visually flag anomalous data points (i.e., periods of sensor failure, physically implausible data), accumulate multiple cleaning steps, inspect R² values before and after data cleaning via base R’s  [*lm()* ](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm) function, and export a zipped folder containing a cleaned .csv file and a full R script that records every decision. *Fluxtools* significantly accelerates the QA/QC workflow, ensuring transparent, reproducible, and shareable data cleaning suitable for final dataset preparation and repository submission. 
 
 
 
@@ -54,7 +54,7 @@ Eddy covariance data processing requires extensive quality control (QA/QC) to id
 
 
 # Statement of need  
-High-frequency (10 Hz; data recorded 10 times per second) eddy covariance measurements generate large datasets that must be carefully aggregated into half-hourly fluxes, using careful quality assurance and quality control [@Burba2021]. At this high frequency, intermittent periods of sensor drift or failure are common, making manual data cleaning an integral part of the workflow. Tools like *EddyPro* [@EddyPro] converts raw 10Hz data into half-hourly fluxes, while R packages like *REddyProc* [@Reddyproc], and Python tools like PyFluxPro [@PyFluxPro], automate u*-threshold filtering, gap-filling, and flux partitioning. These tools excel at bulk data processing but offer no interactive means to inspect or carefully remove outliers that that require a human eye.
+High-frequency (10 Hz; data recorded 10 times per second) eddy covariance measurements generate large datasets that must be aggregated into half-hourly fluxes, using careful quality assurance and quality control [@Burba2021]. At this high frequency, intermittent periods of sensor drift or failure are common, making manual data cleaning an integral part of the workflow. Tools like *EddyPro* [@EddyPro] convert raw 10Hz data into half-hourly fluxes, while R packages like *REddyProc* [@Reddyproc], and Python tools like PyFluxPro [@PyFluxPro], automate u*-threshold filtering, gap-filling, and flux partitioning. These tools excel at bulk data processing but offer no interactive means to inspect or carefully remove outliers that that require a human eye.
 
 In practice, data managers resort to custom scripts, extensive manual visualization, and fragmented documentation to detect and remove erroneous data points caused by sensor drift, malfunction, or calibration issues. These procedures are labor-intensive, prone to errors, challenging to reproduce, and lack transparency. *Fluxtools* addresses this challenge by pairing an interactive scatterplot-based interface with on-the-fly R code generation. Users can visually flag implausible half-hourly data points, automatically generate the exact *case_when(... ~ NA) dplyr* code snippets (or apply removes automatically in the app) and export a .zip file containing a cleaned .csv file plus a comprehensive R script documenting each data removal step that captures every user-made QA/QC decision.
 

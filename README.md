@@ -1,12 +1,14 @@
-# fluxtools v0.2.0
+# fluxtools v0.3.0
 
-Interactive Shiny application for QA/QC of AmeriFlux‐style flux‐tower data.  
-Designed to streamline the post‐processing of eddy covariance datasets (e.g., after EddyPro, physical boundary filtering) to detect and remove outliers, and generate reproducible R code for QA/QC AmeriFlux submission.
+Interactive Shiny application for QA/QC for eddy covariance data processing.  
+Designed to streamline the post‐processing of eddy covariance datasets (e.g., after EddyPro, physical boundary filtering) to detect and remove outliers, and generate reproducible R code for QA/QC public repository submission (i.e., AmeriFlux).
+
+*Fluxtools is an independent project and is not affiliated with or endorsed by the AmeriFlux Network. “AmeriFlux” is a registered trademark of Lawrence Berkeley National Laboratory and is used here for identification purposes only.*
 
 If you use fluxtools in your workflow, please cite the use of this product. 
 
 If you use fluxtools in your workflow, please cite:
-Key, K. (2025). fluxtools (version 0.2.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15597159
+Key, K. (2025). fluxtools (version 0.3.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.15597159
 
 ---
 
@@ -37,7 +39,7 @@ Key, K. (2025). fluxtools (version 0.2.0) [Computer software]. Zenodo. https://d
   Upload up to 100 MB of flux‐tower CSV (all years by default, or pick a subset)
 
 - **Dark/Light Mode**  
-  Toggle UI theme on the fly (switch is in the top-right of the app)
+  Toggle UI theme on the fly (switch is in the bottom-right of the side panel)
 
 - **±σ Outlier Highlighting**  
   Use the slider to mark points beyond N standard deviations from a linear fit; click **Select ±σ outliers** to add them
@@ -50,7 +52,7 @@ Key, K. (2025). fluxtools (version 0.2.0) [Computer software]. Zenodo. https://d
   Hit **Apply removals** to convert flagged Y-values to `NA` in your data frame and immediately refresh the plot.
 
 - **Export Cleaned Data**  
-  Download a CSV with removed points set to `NA` plus an R-script of all your removal code in one go.
+  Download a .csv with removed points set to `NA` plus an R-script of all your removal code in one go.
 
 ---
 

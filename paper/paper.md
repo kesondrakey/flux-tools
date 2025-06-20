@@ -1,5 +1,5 @@
 ---
-title: "Fluxtools: interactive Shiny tool for QA/QC and code generation of AmeriFlux eddy covariance data"
+title: "Fluxtools: An Interactive Shiny App for Reproducible QA/QC of Eddy Covariance Data for AmeriFlux Submission"
 tags:
   - R
   - eddy covariance
@@ -37,7 +37,7 @@ Eddy covariance data processing requires extensive quality control
 data before submission to public data repositories such as
 [AmeriFlux](https://ameriflux.lbl.gov/) [@ameriflux].
 [*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is
-an R \[$\ge$ 4.5.0; @R\] *Shiny* [@Shiny] application built with
+an R ($\ge$ 4.5.0; [-@R]) *Shiny* [@Shiny] application built with
 *Plotly* [@Plotly] and *dplyr* [@dplyr] packages designed to streamline
 this workflow by providing interactive visualization, year-based
 filtering, and on-the-fly R code generation for specified data removal.
@@ -93,17 +93,16 @@ selection`\label{fig:3}`{=tex}](Fig3.png){#fig:3 width="100%"}
 # Statement of need
 
 High-frequency (10 Hz; data recorded 10 times per second) eddy
-covariance measurements generate large datasets that must be carefully
-aggregated into half-hourly fluxes, using careful quality assurance and
-quality control [@Burba2021]. At this high frequency, intermittent
-periods of sensor drift or failure are common, making manual data
-cleaning an integral part of the workflow. Tools like *EddyPro*
-[@EddyPro] converts raw 10Hz data into half-hourly fluxes, while R
-packages like *REddyProc* [@Reddyproc], and Python tools like PyFluxPro
-[@PyFluxPro], automate u\*-threshold filtering, gap-filling, and flux
-partitioning. These tools excel at bulk data processing but offer no
-interactive means to inspect or carefully remove outliers that that
-require a human eye.
+covariance measurements generate large datasets that must be aggregated
+into half-hourly fluxes, using careful quality assurance and quality
+control [@Burba2021]. At this high frequency, intermittent periods of
+sensor drift or failure are common, making manual data cleaning an
+integral part of the workflow. Tools like *EddyPro* [@EddyPro] convert
+raw 10Hz data into half-hourly fluxes, while R packages like *REddyProc*
+[@Reddyproc], and Python tools like PyFluxPro [@PyFluxPro], automate
+u\*-threshold filtering, gap-filling, and flux partitioning. These tools
+excel at bulk data processing but offer no interactive means to inspect
+or carefully remove outliers that that require a human eye.
 
 In practice, data managers resort to custom scripts, extensive manual
 visualization, and fragmented documentation to detect and remove

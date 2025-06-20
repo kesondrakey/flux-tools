@@ -15,14 +15,14 @@ library(fluxtools)
 
 # Overview
 
-**fluxtools** is an R package that provides an interactive Shiny‐based QA/QC environment for AmeriFlux‐style flux‐tower data. In just a few clicks, you can:
+**fluxtools** is an R package that provides an interactive Shiny‐based QA/QC environment for data in the AmeriFlux BASE format. In just a few clicks, you can:
 
-1. Upload one year of Ameriflux‐style CSV data
+1. Upload eddy covariance data in a .csv format (AmeriFlux standard naming and timestamp conventions)
 2. Visualize any two numeric columns against time (or each other)
 3. Highlight statistical outliers (±σ from a linear fit) and add them to your point-removal R code
 4. Manually select and remove data points via a lasso or box. Selecting these adds to the accumulated removal code
 6. Copy and paste the generated code into your own R script for reproducible QA/QC
-7. Download a “cleaned” CSV with excluded values (using "apply removals") set to `NA` and an R script for the code to remove those values
+7. Download a “cleaned” CSV with excluded values (using "apply removals") set to `NA` and an R script for reproducibility
 
 This vignette shows you how to install, launch, and use the main Shiny app—`run_flux_qaqc()`—and walks through a typical workflow.
 
@@ -117,6 +117,4 @@ run_flux_qaqc(-5)
 
 14. **Export cleaned data**: Download the cleaned .csv reflecting your confirmed removals. This button will download a zip file containing your .csv, reflecting changes from using the "apply removals" button, and includes a compiled R script with the R code for those removals.
 
-This workflow illustrates how **fluxtools** streamlines interactive QA/QC of flux-tower data.
-
-   
+*Fluxtools is an independent project and is not affiliated with or endorsed by the AmeriFlux Network. “AmeriFlux” is a registered trademark of Lawrence Berkeley National Laboratory and is used here for identification purposes only.*
