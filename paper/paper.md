@@ -37,13 +37,13 @@ Eddy covariance data processing requires extensive quality control
 data before submission to public data repositories such as
 [AmeriFlux](https://ameriflux.lbl.gov/) [@ameriflux].
 [*Fluxtools*](https://github.com/kesondrakey/fluxtools) [@Fluxtools] is
-an R ({≥} 4.5.0; @R) *Shiny* [@Shiny] application built with *Plotly*
-[@Plotly] and *dplyr* [@dplyr] packages designed to streamline this
-workflow by providing interactive visualization, year-based filtering,
-and on-the-fly R code generation for specified data removal. Users can
-visually flag anomalous data points (i.e., periods of sensor failure,
-physically implausible data), accumulate multiple cleaning steps,
-inspect R² values before and after data cleaning via base R's
+an R \[$\ge$ 4.5.0; @R\] *Shiny* [@Shiny] application built with
+*Plotly* [@Plotly] and *dplyr* [@dplyr] packages designed to streamline
+this workflow by providing interactive visualization, year-based
+filtering, and on-the-fly R code generation for specified data removal.
+Users can visually flag anomalous data points (i.e., periods of sensor
+failure, physically implausible data), accumulate multiple cleaning
+steps, inspect R² values before and after data cleaning via base R's
 [*lm()*](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm)
 function, and export a zipped folder containing a cleaned .csv file and
 a full R script that records every decision. *Fluxtools* significantly
