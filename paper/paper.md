@@ -139,14 +139,14 @@ fluxtools::run_flux_qaqc(-5)
 
 # Acknowledgments
 
-Fluxtools was developed in my role as Co-Principal Investigator for the
-AmeriFlux [US-VT1](https://ameriflux.lbl.gov/sites/siteinfo/US-VT1)
-[@VT1] and [US-VT2](https://ameriflux.lbl.gov/sites/siteinfo/US-VT2)
-[@VT2] sites to streamline our QA/QC pipeline. I thank AmeriFlux for
-maintaining clear, up-to-date data‐formatting specifications (see
-[AmeriFlux Data
+Fluxtools was an independent project developed in my role as
+Co-Principal Investigator for the AmeriFlux
+[US-VT1](https://ameriflux.lbl.gov/sites/siteinfo/US-VT1) [@VT1] and
+[US-VT2](https://ameriflux.lbl.gov/sites/siteinfo/US-VT2) [@VT2] sites
+to streamline our QA/QC pipeline. I thank AmeriFlux for maintaining
+clear, up-to-date data‐formatting specifications (see [AmeriFlux Data
 Variables](https://ameriflux.lbl.gov/wp-content/uploads/2015/10/AmeriFlux_DataVariables.pdf))
-and I acknowlege the broader R and Shiny communities for their efforts
+and I acknowledge the broader R and Shiny communities for their efforts
 in advancing interactive data‐visualization tools.
 
 I am grateful to Dr. Kim Novick (Indiana University), Housen Chu
@@ -163,7 +163,7 @@ This work was supported by NSF's Division of Environmental Biology (DEB)
 Dynamics of Socio-Environmental Systems Program (Award 22-06086) and
 NASA's Carbon Monitoring System (Award 80NSSC23K1254).
 
-Partial development of the fluxtools application logic, debugging
+Partial development of the Fluxtools application logic, debugging
 assistance, and initial code drafting were supported by OpenAI's
 *GPT-4-mini-high* large language model [@ChatGPT]. All final code and
 revisions were authored and approved by the human author.
