@@ -1,5 +1,5 @@
 ---
-title: "Fluxtools: An R Shiny App for Post-Processing Eddy Covariance Data in Line with AmeriFlux Standards"
+title: "Fluxtools: An R Package and Shiny App for Post-Processing Eddy Covariance Data in Line with AmeriFlux Standards"
 tags:
   - R
   - eddy-covariance
