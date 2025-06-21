@@ -18,7 +18,7 @@ authors:
     affiliation: "1"
 affiliations:
   - index: 1
-    name: "Paul H. O'Neill School of Public and Environmental Affairs, Indiana University, Bloomington, Indiana, United States"
+    name: "Paul H. O'Neill School of Public and Environmental Affairs, Indiana University, Bloomington, Indiana, USA"
     ror: "02k40bc56"
 
 repository: https://github.com/kesondrakey/fluxtools
