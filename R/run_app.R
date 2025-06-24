@@ -1,7 +1,28 @@
-#' Launch the interactive QA/QC app for flux data
+#' Launch the interactive 'shiny' QA/QC app for flux data
 #'
 #' @param offset Integer. The site's UTC offset in hours (e.g. -5 for 'UTC-5', +2 for 'UTC+2').
-#'               This argument is required.
+#'               Must be a single integer between -12 and +14;
+#'               supplying a value outside this range throws an error.
+#'
+#' @return
+#' No return value, called for side effects (it launches the Shiny app).
+#'
+#' @examples
+#' \dontshow{
+#' # — Quick automated checks —
+#' # These run during R CMD check, but users don’t see them:
+#' try(run_flux_qaqc(-13))  # should print error message
+#' try(run_flux_qaqc(15))   # should print error message
+#' }
+#'
+#' \dontrun{
+#' # — Interactive demo (only in an interactive R session) —
+#' if (interactive()) {
+#'   run_flux_qaqc(-5)     # US Eastern Standard Time ('UTC-5')
+#' }
+#' }
+#'
+#'
 #' @importFrom shiny runApp
 #' @importFrom plotly plot_ly add_trace add_lines layout event_register
 #' @importFrom dplyr filter mutate pull
