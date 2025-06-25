@@ -1,6 +1,6 @@
 Type: Package
 Package: fluxtools
-Title: an Interactive 'shiny' App for Reproducible QA/QC of Eddy
+Title: An Interactive 'shiny' App for Reproducible QA/QC of Eddy
     Covariance Data Aligned with AmeriFlux Standards
 Version: 0.3.0
 Authors@R: 
@@ -12,8 +12,8 @@ Description: An interactive 'shiny'-based tool for quality assurance and
     to NA plus an R script for reproducibility. Reference: Key (2025)
     <DOI:10.5281/zenodo.15597159>.
 License: GPL-3
-URL: 
-    https://github.com/kesondrakey/fluxtoolshttps://doi.org/10.5281/zenodo.15597159
+URL: https://github.com/kesondrakey/fluxtools,
+    https://doi.org/10.5281/zenodo.15597159
 BugReports: https://github.com/kesondrakey/fluxtools/issues
 Imports: 
     dplyr,
