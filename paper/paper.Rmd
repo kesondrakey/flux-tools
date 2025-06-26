@@ -54,7 +54,7 @@ Eddy covariance data processing requires extensive quality control (QA/QC) to id
 ![Example of the *Fluxtools* interface and data selection\label{fig:2}](Fig2.png){#fig:2 width=100%}
 
 - **Before/after R² diagnostics**: For any numeric variable comparison, *Fluxtools* fits a linear regression model and reports its R² value. 
-Selecting points re-computes R² as if those points were removed, allowing for easy comparison. *Fig 3* shows this process in *Fluxtools* using the *±σ outliers selection tool:* The top (red) R² uses all data, while the bottom R² (orange) omits selected points from the linear regression.
+Selecting points re-computes R² as if those points were removed, allowing for easy comparison. *Fig 3* shows this process in *Fluxtools* using the *±σ outliers selection tool:* The top (red) R² uses all data, while the bottom R² (orange) omits selected points from the linear regression
 
 ![Example of R² diagnostics using the ±σ outliers cutoffs and selection\label{fig:3}](Fig3.png){#fig:3 width=100%}
 
@@ -62,14 +62,13 @@ Selecting points re-computes R² as if those points were removed, allowing for e
 
 
 # Statement of need  
-High-frequency (10 Hz; data recorded 10 times per second) eddy covariance measurements generate large datasets that must be aggregated into half-hourly fluxes, using careful quality assurance and quality control [@Burba2021]. At this high temporal resolution, intermittent periods of sensor drift or failure are common, making manual data cleaning an integral part of the workflow. 
+High-frequency (10Hz; data recorded 10x per second) eddy covariance measurements generate large datasets that must be aggregated into half-hourly fluxes, using careful QA/QC [@Burba2021]. At this high temporal resolution, intermittent periods of sensor drift or failure are common, making manual data cleaning an integral part of the workflow. 
 
 Tools like *Loggernet's CardConvert* feature [@Loggernet] convert raw 10Hz eddy covariance data into half-hourly intervals, preparing them for flux estimation. Software like *EddyPro* [@EddyPro] then computes turbulent fluxes of CO₂, H₂O, and energy using these half-hourly inputs. Post-processing *R* packages like *REddyProc* [@Reddyproc], and Python tools like PyFluxPro [@PyFluxPro], automate u*-threshold filtering, gap-filling, and flux partitioning. These tools excel at bulk data processing but offer no interactive means to inspect or carefully remove outliers that require a human eye.
 
-In practice, data managers resort to custom scripts, extensive manual visualization, and fragmented documentation to detect and remove erroneous data points caused by sensor drift, malfunction, or calibration issues. These procedures are labor-intensive, prone to errors, challenging to reproduce, and lack transparency. *Fluxtools* addresses this challenge by pairing an interactive scatterplot-based interface with on-the-fly R code generation. Users can visually flag implausible half-hourly data points, automatically generate the exact *case_when(... ~ NA) dplyr* code snippets (or apply removals automatically in the app) and export a .zip file containing a cleaned .csv file plus a comprehensive R script documenting each data removal step that captures every user-made QA/QC decision.
+In practice, data managers resort to custom scripts, manual visualization, and fragmented documentation to detect and remove erroneous data points caused by sensor drift, malfunction, or calibration issues. These procedures are labor-intensive, error-prone, difficult to reproduce, and lack transparency. *Fluxtools* addresses these challenges by pairing an interactive scatterplot-based interface with on-the-fly R code generation. Users can visually flag implausible half-hourly data points, automatically generate or directly apply the exact *case_when(... ~ NA) dplyr* code snippets and export a .zip file containing a cleaned .csv file plus a comprehensive R script documenting each QA/QC decision.
 
-*Fluxtools* streamlines and clarifies this QA/QC workflow by combining interactivity with code-based reproducibility. It promotes transparent documentation of decisions, reduces manual effort, and accelerates the preparation of flux data for repository uploads such as individual site submissions to AmeriFlux. Ultimately, *Fluxtools* lowers the barriers to robust and reproducible QA/QC workflows, enabling researchers to devote less time to manual anomaly detection and more time to scientific analysis.
-
+By combining interactivity with code-based reproducibility, *Fluxtools* streamlines QA/QC workflows by enhancing transparency, reducing manual effort, and accelerating the preparation of flux data for repository submissions (e.g., Ameriflux). Ultimately, *Fluxtools* lowers the barriers to robust and reproducible QA/QC, allowing data managers and scientists to spend less time on manual anomaly detection and more on scientific analysis and interpretation.
 
 # Code Example
 *Fluxtools can be installed from [Github](https://github.com/kesondrakey/fluxtools).*
